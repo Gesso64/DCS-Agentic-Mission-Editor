@@ -1,0 +1,110 @@
+{
+  "name": "Demo CAP with Full Schema",
+  "theatre": "Caucasus",
+  "sortie": "CAP-02",
+  "version": 20,
+  "start_time": 1262304000,
+  "coalitions": [
+    {"side": "blue", "country": "USA"},
+    {"side": "red", "country": "Russia"}
+  ],
+  "briefing": {
+    "description": "Full-schema demo: 2-ship CAP with payload, bullseye, radios, zones, markers, and goals.",
+    "blue_task": "Establish CAP over Batumi.",
+    "red_task": "Air defense alert."
+  },
+  "bullseye": {
+    "blue": {"x": -250000, "y": 620000},
+    "red": {"x": -230000, "y": 650000}
+  },
+  "radios": {
+    "awacs": [
+      {"flight_name": "Overlord", "callsign": "Overlord", "frequency_mhz": 251.0}
+    ],
+    "tankers": [
+      {"flight_name": "Texaco", "callsign": "Texaco", "frequency_mhz": 124.0, "tacan_channel": 44, "tacan_mode": "X"}
+    ]
+  },
+  "zones": [
+    {"name": "CAP Zone", "center": {"x": -255000, "y": 630000}, "radius": 20000, "color": "rgba(0,0,255,0.2)"}
+  ],
+  "markers": [
+    {"name": "CAP North", "position": {"x": -255000, "y": 630000}, "text": "CAP Patrol", "coalition": "blue"}
+  ],
+  "mission_goals": [
+    {"description": "Maintain CAP cover", "score_target": 200, "coalition": "blue", "category": "intercept"}
+  ],
+  "flights": [
+    {
+      "name": "CAP Alpha",
+      "aircraft_type": "F/A-18C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "altitude": 5000,
+      "speed": 480,
+      "skill": "Excellent",
+      "payload": {"preset_name": "CAP A-A", "fuel": 0.8, "chaff": 60, "flare": 60},
+      "waypoints": [
+        {"x": -255000, "y": 630000, "altitude": 5000, "speed": 480, "name": "CAP North"},
+        {"x": -265000, "y": 620000, "altitude": 5000, "speed": 480, "name": "CAP South"}
+      ]
+    },
+    {
+      "name": "Red Bandit",
+      "aircraft_type": "Su-27",
+      "country": "Russia",
+      "side": "red",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "cold",
+      "airport": "Sochi-Adler",
+      "altitude": 4500,
+      "speed": 450,
+      "skill": "Good",
+      "waypoints": [
+        {"x": -230000, "y": 660000, "altitude": 4500, "speed": 450, "name": "Patrol North"}
+      ]
+    }
+  ],
+  "vehicles": [
+    {
+      "name": "SA-11 Site",
+      "vehicle_type": "SA-11-LN",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -272000, "y": 614000},
+      "group_size": 2,
+      "heading": 45,
+      "skill": "High",
+      "roe": "OpenFire",
+      "alarm_state": "Auto"
+    }
+  ],
+  "farps": [
+    {
+      "name": "FARP Charlie",
+      "country": "USA",
+      "side": "blue",
+      "position": {"x": -260000, "y": 640000},
+      "has_fuel": true,
+      "has_ammo": true,
+      "has_repair": false
+    }
+  ],
+  "triggers": [
+    {
+      "name": "CAP Message",
+      "once": true,
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 60.0}
+      ],
+      "actions": [
+        {"kind": "show_message", "message": "CAP patrol established. Monitor bandits north of the zone."}
+      ]
+    }
+  ]
+}

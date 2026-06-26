@@ -1,0 +1,2536 @@
+{
+  "$defs": {
+    "ATCFrequency": {
+      "description": "Airport / airbase radio frequencies.",
+      "properties": {
+        "airport": {
+          "description": "Airport name on the theatre",
+          "title": "Airport",
+          "type": "string"
+        },
+        "tower_mhz": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tower/approach frequency in MHz",
+          "title": "Tower Mhz"
+        },
+        "ground_mhz": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Ground frequency in MHz",
+          "title": "Ground Mhz"
+        },
+        "approach_mhz": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Approach/departure frequency in MHz",
+          "title": "Approach Mhz"
+        }
+      },
+      "required": [
+        "airport"
+      ],
+      "title": "ATCFrequency",
+      "type": "object"
+    },
+    "AWACSComms": {
+      "description": "AWACS (airborne early warning) radio configuration.",
+      "properties": {
+        "flight_name": {
+          "description": "Name of the AWACS flight in spec.flights",
+          "title": "Flight Name",
+          "type": "string"
+        },
+        "callsign": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Magic",
+          "description": "AWACS radio callsign",
+          "title": "Callsign"
+        },
+        "frequency_mhz": {
+          "description": "Primary frequency in MHz",
+          "title": "Frequency Mhz",
+          "type": "number"
+        },
+        "modulation": {
+          "$ref": "#/$defs/Modulation",
+          "default": "AM",
+          "description": "Radio modulation"
+        }
+      },
+      "required": [
+        "flight_name",
+        "frequency_mhz"
+      ],
+      "title": "AWACSComms",
+      "type": "object"
+    },
+    "ActionKind": {
+      "description": "Trigger action types supported in v1.",
+      "enum": [
+        "show_message",
+        "play_sound",
+        "set_flag",
+        "activate_group",
+        "end_mission",
+        "set_goal_score"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "AlarmState": {
+      "description": "Alarm state for ground/air defense units.",
+      "enum": [
+        "Green",
+        "Red",
+        "Auto"
+      ],
+      "title": "AlarmState",
+      "type": "string"
+    },
+    "Briefing": {
+      "description": "Mission briefing information.",
+      "properties": {
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "General mission description",
+          "title": "Description"
+        },
+        "blue_task": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Blue coalition task description",
+          "title": "Blue Task"
+        },
+        "red_task": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Red coalition task description",
+          "title": "Red Task"
+        },
+        "images_blue": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Blueprint image file paths for blue",
+          "title": "Images Blue"
+        },
+        "images_red": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Blueprint image file paths for red",
+          "title": "Images Red"
+        }
+      },
+      "title": "Briefing",
+      "type": "object"
+    },
+    "Bullseye": {
+      "description": "Bullseye (navigation reference point) for each coalition.\n\nIf absent from a MissionSpec, the assembler falls back to the\ntheatre default from catalog/theatres.py.",
+      "properties": {
+        "blue": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Blue-coalition bullseye position"
+        },
+        "red": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Red-coalition bullseye position"
+        }
+      },
+      "title": "Bullseye",
+      "type": "object"
+    },
+    "CarrierOps": {
+      "description": "Carrier operations configuration.\n\nTACAN, ICLS, BRC, and link-4 settings for a carrier.\nThe ship must exist in spec.ships with a carrier-type vessel.",
+      "properties": {
+        "ship_name": {
+          "description": "Name of the carrier ship in spec.ships",
+          "title": "Ship Name",
+          "type": "string"
+        },
+        "tacan_channel": {
+          "description": "TACAN channel",
+          "maximum": 126,
+          "minimum": 1,
+          "title": "Tacan Channel",
+          "type": "integer"
+        },
+        "tacan_mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "X",
+          "description": "TACAN mode: X or Y",
+          "title": "Tacan Mode"
+        },
+        "tacan_callsign": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "STN",
+          "description": "TACAN callsign (e.g. 'STN', 'ICL')",
+          "title": "Tacan Callsign"
+        },
+        "icls_channel": {
+          "anyOf": [
+            {
+              "maximum": 20,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "ICLS channel",
+          "title": "Icls Channel"
+        },
+        "base_recovery_course": {
+          "anyOf": [
+            {
+              "exclusiveMaximum": 360,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "BRC in degrees (ship's landing direction)",
+          "title": "Base Recovery Course"
+        },
+        "link4_mhz": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Link-4 data link frequency in MHz",
+          "title": "Link4 Mhz"
+        }
+      },
+      "required": [
+        "ship_name",
+        "tacan_channel"
+      ],
+      "title": "CarrierOps",
+      "type": "object"
+    },
+    "Coalition": {
+      "description": "A coalition side with its countries.",
+      "properties": {
+        "side": {
+          "description": "'blue', 'red', or 'neutrals'",
+          "title": "Side",
+          "type": "string"
+        },
+        "country": {
+          "description": "Country name, e.g. 'USA', 'Russia'",
+          "title": "Country",
+          "type": "string"
+        }
+      },
+      "required": [
+        "side",
+        "country"
+      ],
+      "title": "Coalition",
+      "type": "object"
+    },
+    "CustomScript": {
+      "description": "Custom Lua script to embed in the mission.",
+      "properties": {
+        "name": {
+          "description": "Script name",
+          "title": "Name",
+          "type": "string"
+        },
+        "content": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Inline script content",
+          "title": "Content"
+        },
+        "file_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Path to external script file",
+          "title": "File Path"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Lua",
+          "description": "Script language",
+          "title": "Language"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "CustomScript",
+      "type": "object"
+    },
+    "FARP": {
+      "description": "A forward arming and refuelling point.",
+      "properties": {
+        "name": {
+          "description": "FARP name",
+          "title": "Name",
+          "type": "string"
+        },
+        "country": {
+          "description": "Country",
+          "title": "Country",
+          "type": "string"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "blue",
+          "description": "Coalition side",
+          "title": "Side"
+        },
+        "position": {
+          "$ref": "#/$defs/Position",
+          "description": "Position"
+        },
+        "heading": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0,
+          "description": "Heading in degrees",
+          "title": "Heading"
+        },
+        "invisible": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "description": "Invisible FARP (not rendered)",
+          "title": "Invisible"
+        },
+        "has_fuel": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": true,
+          "description": "Provides fuel",
+          "title": "Has Fuel"
+        },
+        "has_ammo": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": true,
+          "description": "Provides ammunition",
+          "title": "Has Ammo"
+        },
+        "has_repair": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": true,
+          "description": "Provides repairs",
+          "title": "Has Repair"
+        }
+      },
+      "required": [
+        "name",
+        "country",
+        "position"
+      ],
+      "title": "FARP",
+      "type": "object"
+    },
+    "FlightGroup": {
+      "description": "An aircraft group (flight).",
+      "properties": {
+        "name": {
+          "description": "Group name (e.g. 'Strike 1', 'CAP 1')",
+          "title": "Name",
+          "type": "string"
+        },
+        "aircraft_type": {
+          "description": "Aircraft type alias, e.g. 'F/A-18C', 'Su-27', 'AH-64D'",
+          "title": "Aircraft Type",
+          "type": "string"
+        },
+        "country": {
+          "description": "Country, e.g. 'USA', 'Russia'",
+          "title": "Country",
+          "type": "string"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "blue",
+          "description": "Coalition side: 'blue' or 'red'",
+          "title": "Side"
+        },
+        "group_size": {
+          "anyOf": [
+            {
+              "maximum": 4,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1,
+          "description": "Number of aircraft in the flight (1-4)",
+          "title": "Group Size"
+        },
+        "task": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TaskType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Primary mission task"
+        },
+        "start_type": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StartType"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "cold",
+          "description": "Start type: cold, warm, or runway"
+        },
+        "airport": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Airport name for takeoff",
+          "title": "Airport"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Position for inflight spawn (if no airport)"
+        },
+        "altitude": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cruise altitude in meters",
+          "title": "Altitude"
+        },
+        "speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cruise speed in km/h",
+          "title": "Speed"
+        },
+        "skill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Skill"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Average",
+          "description": "AI skill level"
+        },
+        "waypoints": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Waypoint"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Route waypoints",
+          "title": "Waypoints"
+        },
+        "late_activation": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "description": "Late activation (spawn on trigger)",
+          "title": "Late Activation"
+        },
+        "livery": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Aircraft livery/skin",
+          "title": "Livery"
+        },
+        "callsign": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Callsigns for each unit",
+          "title": "Callsign"
+        },
+        "radio_frequency": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Radio frequency in MHz",
+          "title": "Radio Frequency"
+        },
+        "modulation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Modulation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "AM",
+          "description": "Radio modulation: AM or FM"
+        },
+        "payload": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PayloadSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Weapons, fuel, and countermeasures configuration"
+        }
+      },
+      "required": [
+        "name",
+        "aircraft_type",
+        "country"
+      ],
+      "title": "FlightGroup",
+      "type": "object"
+    },
+    "JTACComms": {
+      "description": "JTAC (ground-based forward air controller) radio configuration.",
+      "properties": {
+        "unit_name": {
+          "description": "Name of the JTAC ground unit in spec.vehicles",
+          "title": "Unit Name",
+          "type": "string"
+        },
+        "callsign": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Warrior",
+          "description": "JTAC radio callsign",
+          "title": "Callsign"
+        },
+        "frequency_mhz": {
+          "description": "Primary frequency in MHz",
+          "title": "Frequency Mhz",
+          "type": "number"
+        },
+        "code": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1688,
+          "description": "Laser target designation code",
+          "title": "Code"
+        }
+      },
+      "required": [
+        "unit_name",
+        "frequency_mhz"
+      ],
+      "title": "JTACComms",
+      "type": "object"
+    },
+    "MapMarker": {
+      "description": "A text marker on the map (F10 map marker).",
+      "properties": {
+        "name": {
+          "description": "Marker label",
+          "title": "Name",
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/$defs/Position",
+          "description": "Marker position"
+        },
+        "text": {
+          "description": "Marker text content",
+          "title": "Text",
+          "type": "string"
+        },
+        "coalition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "all",
+          "description": "Visible to: 'blue', 'red', or 'all'",
+          "title": "Coalition"
+        }
+      },
+      "required": [
+        "name",
+        "position",
+        "text"
+      ],
+      "title": "MapMarker",
+      "type": "object"
+    },
+    "MissionGoal": {
+      "description": "A mission goal / victory condition.\n\nThese map to DCS's scoring system. Cross-references to specific\nflights or zones are not validated here \u2014 that belongs in validation/.",
+      "properties": {
+        "description": {
+          "description": "Goal description",
+          "title": "Description",
+          "type": "string"
+        },
+        "score_target": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Target score for this goal",
+          "title": "Score Target"
+        },
+        "coalition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Which coalition this goal applies to: 'blue' or 'red'",
+          "title": "Coalition"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Goal category, e.g. 'intercept', 'destroy', 'capture'",
+          "title": "Category"
+        },
+        "params": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional goal parameters",
+          "title": "Params"
+        }
+      },
+      "required": [
+        "description"
+      ],
+      "title": "MissionGoal",
+      "type": "object"
+    },
+    "Modulation": {
+      "description": "Radio modulation: AM or FM.",
+      "enum": [
+        "AM",
+        "FM"
+      ],
+      "title": "Modulation",
+      "type": "string"
+    },
+    "PayloadSpec": {
+      "description": "Weapons and fuel configuration for a flight.\n\nNamed presets (from catalog/payloads.py) may be referenced by name.\nExplicit pylons override the preset. If neither is set, the aircraft\nspawns with its DCS-default loadout.",
+      "properties": {
+        "preset_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Named preset from catalog/payloads.py; if set, pylons may be omitted",
+          "title": "Preset Name"
+        },
+        "pylons": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Pylon"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Explicit pylon assignments; override preset",
+          "title": "Pylons"
+        },
+        "fuel": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fuel fraction 0..1",
+          "title": "Fuel"
+        },
+        "chaff": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Chaff dispenser count",
+          "title": "Chaff"
+        },
+        "flare": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flare dispenser count",
+          "title": "Flare"
+        },
+        "gun": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Gun ammo percentage",
+          "title": "Gun"
+        }
+      },
+      "title": "PayloadSpec",
+      "type": "object"
+    },
+    "Position": {
+      "description": "Map coordinate position in meters (DCS coordinate system).\n\npydcs uses Point(x, y) where x is north-south, y is east-west.\nCoordinates are negative on most theatres (Caucasus, Syria, etc.).",
+      "properties": {
+        "x": {
+          "description": "X coordinate in meters (map-projected)",
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "description": "Y coordinate in meters (map-projected)",
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Position",
+      "type": "object"
+    },
+    "Pylon": {
+      "description": "A single pylon station with a weapon loadout.",
+      "properties": {
+        "station": {
+          "description": "Pylon station number",
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Station",
+          "type": "integer"
+        },
+        "clsid": {
+          "description": "DCS CLSID, e.g. '{AIM-9X}'",
+          "title": "Clsid",
+          "type": "string"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1,
+          "description": "Number of weapons on this station",
+          "title": "Quantity"
+        }
+      },
+      "required": [
+        "station",
+        "clsid"
+      ],
+      "title": "Pylon",
+      "type": "object"
+    },
+    "ROE": {
+      "description": "Rules of Engagement for AI groups.",
+      "enum": [
+        "WeaponFree",
+        "OpenFireWeaponFree",
+        "OpenFire",
+        "ReturnFire",
+        "WeaponHold"
+      ],
+      "title": "ROE",
+      "type": "string"
+    },
+    "RadioComms": {
+      "description": "Aggregate radio communication settings for the mission.",
+      "properties": {
+        "atc": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/ATCFrequency"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Airport ATC frequency overrides",
+          "title": "Atc"
+        },
+        "awacs": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/AWACSComms"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "AWACS flights",
+          "title": "Awacs"
+        },
+        "tankers": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/TankerComms"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tanker flights",
+          "title": "Tankers"
+        },
+        "jtac": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/JTACComms"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "JTAC ground units",
+          "title": "Jtac"
+        }
+      },
+      "title": "RadioComms",
+      "type": "object"
+    },
+    "ShipGroup": {
+      "description": "A ship group.",
+      "properties": {
+        "name": {
+          "description": "Group name",
+          "title": "Name",
+          "type": "string"
+        },
+        "ship_type": {
+          "description": "Ship type alias, e.g. 'Arleigh-Burke', 'Kuznetsov'",
+          "title": "Ship Type",
+          "type": "string"
+        },
+        "country": {
+          "description": "Country",
+          "title": "Country",
+          "type": "string"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "blue",
+          "description": "Coalition side",
+          "title": "Side"
+        },
+        "position": {
+          "$ref": "#/$defs/Position",
+          "description": "Position"
+        },
+        "group_size": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1,
+          "description": "Number of ships of this type",
+          "title": "Group Size"
+        },
+        "heading": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0,
+          "description": "Initial heading in degrees",
+          "title": "Heading"
+        },
+        "skill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Skill"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Average"
+        },
+        "waypoints": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Waypoint"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Waypoints"
+        }
+      },
+      "required": [
+        "name",
+        "ship_type",
+        "country",
+        "position"
+      ],
+      "title": "ShipGroup",
+      "type": "object"
+    },
+    "Skill": {
+      "enum": [
+        "Player",
+        "Client",
+        "Excellent",
+        "Good",
+        "High",
+        "Average",
+        "Random"
+      ],
+      "title": "Skill",
+      "type": "string"
+    },
+    "StartType": {
+      "enum": [
+        "cold",
+        "warm",
+        "runway"
+      ],
+      "title": "StartType",
+      "type": "string"
+    },
+    "StaticObject": {
+      "description": "A static object (building, container, etc.).\n\n`type` is resolved against pydcs's dcs.statics.{Fortification,\nGroundObject, Warehouse, Cargo} containers \u2014 see catalog/statics.py.",
+      "properties": {
+        "name": {
+          "description": "Object name",
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "description": "Static type, e.g. 'FARP', 'container_red', 'house'",
+          "title": "Type",
+          "type": "string"
+        },
+        "country": {
+          "description": "Country",
+          "title": "Country",
+          "type": "string"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "neutrals",
+          "title": "Side"
+        },
+        "position": {
+          "$ref": "#/$defs/Position",
+          "description": "Position"
+        },
+        "heading": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0,
+          "description": "Heading in degrees",
+          "title": "Heading"
+        },
+        "dead": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "description": "Render as destroyed",
+          "title": "Dead"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "country",
+        "position"
+      ],
+      "title": "StaticObject",
+      "type": "object"
+    },
+    "TankerComms": {
+      "description": "Aerial tanker radio configuration.",
+      "properties": {
+        "flight_name": {
+          "description": "Name of the tanker flight in spec.flights",
+          "title": "Flight Name",
+          "type": "string"
+        },
+        "callsign": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Texaco",
+          "description": "Tanker radio callsign",
+          "title": "Callsign"
+        },
+        "frequency_mhz": {
+          "description": "Primary frequency in MHz",
+          "title": "Frequency Mhz",
+          "type": "number"
+        },
+        "tacan_channel": {
+          "anyOf": [
+            {
+              "maximum": 126,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "TACAN channel",
+          "title": "Tacan Channel"
+        },
+        "tacan_mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "X",
+          "description": "TACAN mode: X or Y",
+          "title": "Tacan Mode"
+        }
+      },
+      "required": [
+        "flight_name",
+        "frequency_mhz"
+      ],
+      "title": "TankerComms",
+      "type": "object"
+    },
+    "TaskType": {
+      "enum": [
+        "CAP",
+        "CAS",
+        "SEAD",
+        "DEAD",
+        "STRIKE",
+        "SWEEP",
+        "INTERCEPT",
+        "ESCORT",
+        "AWACS",
+        "REFUELING",
+        "TRANSPORT",
+        "RECON",
+        "ANTISHIP",
+        "GROUND_ATTACK",
+        "AFAC",
+        "EWR",
+        "PATROL"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    },
+    "Trigger": {
+      "description": "A mission trigger: list of conditions AND-ed together, list of actions.",
+      "properties": {
+        "name": {
+          "description": "Trigger name",
+          "title": "Name",
+          "type": "string"
+        },
+        "once": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": true,
+          "description": "Fire once (True) or continuously (False)",
+          "title": "Once"
+        },
+        "coalition": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "'blue', 'red', or None for all coalitions",
+          "title": "Coalition"
+        },
+        "conditions": {
+          "description": "Conditions (AND-ed together)",
+          "items": {
+            "$ref": "#/$defs/TriggerCondition"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "actions": {
+          "description": "Actions to execute when conditions fire",
+          "items": {
+            "$ref": "#/$defs/TriggerAction"
+          },
+          "title": "Actions",
+          "type": "array"
+        },
+        "params": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional/extensible trigger parameters",
+          "title": "Params"
+        }
+      },
+      "required": [
+        "name",
+        "conditions",
+        "actions"
+      ],
+      "title": "Trigger",
+      "type": "object"
+    },
+    "TriggerAction": {
+      "description": "A single trigger action.\n\nOne of the optional fields is populated based on `kind`.",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ActionKind",
+          "description": "Action type"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Message text (SHOW_MESSAGE)",
+          "title": "Message"
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 10,
+          "description": "Message/sound duration in seconds",
+          "title": "Duration Seconds"
+        },
+        "sound_file": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Sound file path (PLAY_SOUND)",
+          "title": "Sound File"
+        },
+        "flag_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flag name to set (SET_FLAG)",
+          "title": "Flag Name"
+        },
+        "flag_value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1,
+          "description": "Flag value to set (SET_FLAG)",
+          "title": "Flag Value"
+        },
+        "group_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Group to activate (ACTIVATE_GROUP)",
+          "title": "Group Name"
+        },
+        "winner": {
+          "anyOf": [
+            {
+              "enum": [
+                "blue",
+                "red",
+                "draw"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Winner for END_MISSION: 'blue', 'red', or 'draw'",
+          "title": "Winner"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Score value (SET_GOAL_SCORE)",
+          "title": "Score"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "TriggerAction",
+      "type": "object"
+    },
+    "TriggerCondition": {
+      "description": "A single trigger condition.\n\nOne of the optional fields is populated based on `kind`.\nThe `params` dict allows future extensibility for condition types\nnot yet added to TriggerKind.",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/TriggerKind",
+          "description": "Condition type"
+        },
+        "time_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Seconds since mission start (TIME_REACHED)",
+          "title": "Time Seconds"
+        },
+        "unit_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Unit name (UNIT_DEAD, UNIT_IN_ZONE)",
+          "title": "Unit Name"
+        },
+        "group_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Group name (GROUP_DEAD)",
+          "title": "Group Name"
+        },
+        "zone_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Zone name (UNIT_IN_ZONE)",
+          "title": "Zone Name"
+        },
+        "flag_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Flag name or index (FLAG_TRUE)",
+          "title": "Flag Name"
+        },
+        "params": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Additional/extensible condition parameters",
+          "title": "Params"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "TriggerCondition",
+      "type": "object"
+    },
+    "TriggerKind": {
+      "description": "Trigger condition types supported in v1.",
+      "enum": [
+        "time_reached",
+        "unit_dead",
+        "group_dead",
+        "unit_in_zone",
+        "flag_true"
+      ],
+      "title": "TriggerKind",
+      "type": "string"
+    },
+    "VehicleGroup": {
+      "description": "A ground vehicle group.",
+      "properties": {
+        "name": {
+          "description": "Group name",
+          "title": "Name",
+          "type": "string"
+        },
+        "vehicle_type": {
+          "description": "Vehicle type alias, e.g. 'SA-11-LN', 'M-1-ABRAMS', 'BMP-2'",
+          "title": "Vehicle Type",
+          "type": "string"
+        },
+        "country": {
+          "description": "Country",
+          "title": "Country",
+          "type": "string"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "red",
+          "description": "Coalition side",
+          "title": "Side"
+        },
+        "position": {
+          "$ref": "#/$defs/Position",
+          "description": "Position"
+        },
+        "group_size": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 1,
+          "description": "Number of vehicles in the group",
+          "title": "Group Size"
+        },
+        "heading": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": 0,
+          "description": "Initial heading in degrees",
+          "title": "Heading"
+        },
+        "skill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Skill"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "Average",
+          "description": "AI skill level"
+        },
+        "waypoints": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Waypoint"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Route waypoints",
+          "title": "Waypoints"
+        },
+        "late_activation": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "Late Activation"
+        },
+        "visible": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": true,
+          "description": "Visible before mission start",
+          "title": "Visible"
+        },
+        "roe": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ROE"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Rules of engagement for this group"
+        },
+        "alarm_state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AlarmState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Alarm state (alert level)"
+        }
+      },
+      "required": [
+        "name",
+        "vehicle_type",
+        "country",
+        "position"
+      ],
+      "title": "VehicleGroup",
+      "type": "object"
+    },
+    "Waypoint": {
+      "description": "A waypoint along a group's route.\n\nSpeed is km/h (pydcs convention). The assembler converts to m/s\ninternally via dcs_agentic.units.kmh_to_ms.",
+      "properties": {
+        "x": {
+          "description": "X coordinate in meters",
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "description": "Y coordinate in meters",
+          "title": "Y",
+          "type": "number"
+        },
+        "altitude": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Altitude in meters (MSL)",
+          "title": "Altitude"
+        },
+        "speed": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Speed in km/h (pydcs convention; converted to m/s internally)",
+          "title": "Speed"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Waypoint name",
+          "title": "Name"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Waypoint type: 'Turning Point', 'Land', 'TakeOff', etc.",
+          "title": "Type"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Point action: 'TURNING_POINT', 'LANDING', 'FLY_OVER_POINT', etc.",
+          "title": "Action"
+        },
+        "tasks": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/TaskType"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tasks to execute at this waypoint",
+          "title": "Tasks"
+        },
+        "eta_locked": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "description": "Lock ETA at this waypoint",
+          "title": "Eta Locked"
+        },
+        "airdrome_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Airport ID for landing/takeoff waypoints",
+          "title": "Airdrome Id"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Waypoint",
+      "type": "object"
+    },
+    "Weather": {
+      "description": "Mission weather configuration.",
+      "properties": {
+        "season": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Season: 'Summer', 'Winter', 'Autumn', 'Spring' (currently a no-op in the assembler)",
+          "title": "Season"
+        },
+        "qnh": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "QNH pressure in mmHg",
+          "title": "Qnh"
+        },
+        "temperature": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Temperature at ground level (\u00b0C)",
+          "title": "Temperature"
+        },
+        "fog_enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "title": "Fog Enabled"
+        },
+        "fog_visibility": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fog visibility in meters",
+          "title": "Fog Visibility"
+        },
+        "clouds_thickness": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cloud thickness (0-10)",
+          "title": "Clouds Thickness"
+        },
+        "clouds_density": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cloud density (0-10)",
+          "title": "Clouds Density"
+        },
+        "clouds_base": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Cloud base altitude in meters",
+          "title": "Clouds Base"
+        },
+        "clouds_iprecptns": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Precipitation type (0=none)",
+          "title": "Clouds Iprecptns"
+        },
+        "wind_at_ground": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WindGround"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "wind_at_height": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WindHeight"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "enable_dust": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": false,
+          "description": "Enable dust/sandstorms",
+          "title": "Enable Dust"
+        }
+      },
+      "title": "Weather",
+      "type": "object"
+    },
+    "WindGround": {
+      "properties": {
+        "speed": {
+          "default": 0,
+          "description": "Wind speed at ground level (m/s)",
+          "title": "Speed",
+          "type": "number"
+        },
+        "dir": {
+          "default": 0,
+          "description": "Wind direction in degrees (0-360)",
+          "title": "Dir",
+          "type": "number"
+        }
+      },
+      "title": "WindGround",
+      "type": "object"
+    },
+    "WindHeight": {
+      "properties": {
+        "speed": {
+          "default": 0,
+          "description": "Wind speed at altitude (m/s)",
+          "title": "Speed",
+          "type": "number"
+        },
+        "dir": {
+          "default": 0,
+          "description": "Wind direction in degrees (0-360)",
+          "title": "Dir",
+          "type": "number"
+        }
+      },
+      "title": "WindHeight",
+      "type": "object"
+    },
+    "Zone": {
+      "description": "A circular zone on the map (combat zone, no-fly zone, etc.).",
+      "properties": {
+        "name": {
+          "description": "Zone name (referenced by triggers)",
+          "title": "Name",
+          "type": "string"
+        },
+        "center": {
+          "$ref": "#/$defs/Position",
+          "description": "Center position in meters"
+        },
+        "radius": {
+          "description": "Radius in meters",
+          "minimum": 0,
+          "title": "Radius",
+          "type": "number"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "rgba(255,0,0,0.3)",
+          "description": "Color string e.g. 'rgba(r,g,b,a)'",
+          "title": "Color"
+        }
+      },
+      "required": [
+        "name",
+        "center",
+        "radius"
+      ],
+      "title": "Zone",
+      "type": "object"
+    }
+  },
+  "description": "Complete declarative mission specification.",
+  "properties": {
+    "name": {
+      "description": "Mission name",
+      "title": "Name",
+      "type": "string"
+    },
+    "theatre": {
+      "default": "Caucasus",
+      "description": "Map/theatre. See VALID_THEATRES.",
+      "title": "Theatre",
+      "type": "string"
+    },
+    "sortie": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Sortie identifier text",
+      "title": "Sortie"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": 20,
+      "description": "MIZ version",
+      "title": "Version"
+    },
+    "start_time": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Start time as unix timestamp",
+      "title": "Start Time"
+    },
+    "coalitions": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Coalition"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Which countries are on which side",
+      "title": "Coalitions"
+    },
+    "briefing": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Briefing"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Mission briefing"
+    },
+    "weather": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Weather"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Weather conditions"
+    },
+    "flights": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/FlightGroup"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Aircraft groups",
+      "title": "Flights"
+    },
+    "vehicles": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/VehicleGroup"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Ground vehicle groups",
+      "title": "Vehicles"
+    },
+    "ships": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/ShipGroup"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Ship groups",
+      "title": "Ships"
+    },
+    "statics": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/StaticObject"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Static objects",
+      "title": "Statics"
+    },
+    "farps": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/FARP"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Forward arming and refuelling points",
+      "title": "Farps"
+    },
+    "carrier_ops": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/CarrierOps"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Carrier-based operations (TACAN, ICLS, etc.)",
+      "title": "Carrier Ops"
+    },
+    "triggers": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Trigger"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Mission triggers",
+      "title": "Triggers"
+    },
+    "zones": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/Zone"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Map zones (combat zones, no-fly zones, etc.)",
+      "title": "Zones"
+    },
+    "markers": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/MapMarker"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "F10 map markers",
+      "title": "Markers"
+    },
+    "bullseye": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Bullseye"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Bullseye reference points per coalition"
+    },
+    "radios": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/RadioComms"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Radio communications configuration"
+    },
+    "mission_goals": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/MissionGoal"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Mission goals / victory conditions",
+      "title": "Mission Goals"
+    },
+    "custom_scripts": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/CustomScript"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Custom Lua scripts",
+      "title": "Custom Scripts"
+    },
+    "agent_notes": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Notes from the AI agent about design decisions",
+      "title": "Agent Notes"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "title": "MissionSpec",
+  "type": "object"
+}

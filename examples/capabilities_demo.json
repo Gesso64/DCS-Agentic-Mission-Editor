@@ -1,0 +1,193 @@
+{
+  "name": "AEW&C + CAP + Strike Package",
+  "theatre": "Caucasus",
+  "sortie": "OP-LION-01",
+  "coalitions": [
+    {"side": "blue", "country": "USA"},
+    {"side": "blue", "country": "UK"},
+    {"side": "red", "country": "Russia"},
+    {"side": "red", "country": "Iran"}
+  ],
+  "briefing": {
+    "description": "Coalition strike package to neutralise SA-10 SAM site near Sochi. Package includes E-3A AWACS, CAP cover, strike flight, and SEAD escort.",
+    "blue_task": "1. E-3A Sentry establish orbit at FL300 over Black Sea. 2. CAP flight maintain combat air patrol between Batumi and the target. 3. Strike flight ingress at low level, pop to 15,000ft for weapons release. 4. SEAD flight suppress any SAM radar emissions. Egress to Batumi.",
+    "red_task": "Air defence forces defend the Sochi AD sector."
+  },
+  "flights": [
+    {
+      "name": "Magic AWACS",
+      "aircraft_type": "E-3A",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 1,
+      "task": "AWACS",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Excellent",
+      "altitude": 9000,
+      "speed": 350,
+      "waypoints": [
+        {"x": -260000, "y": 640000, "altitude": 9000, "speed": 350, "name": "AWACS Orbit In"},
+        {"x": -270000, "y": 645000, "altitude": 9000, "speed": 300, "name": "AWACS Orbit", "type": "Turning Point"},
+        {"x": -260000, "y": 640000, "altitude": 9000, "speed": 350, "name": "AWACS Orbit Out"}
+      ]
+    },
+    {
+      "name": "CAP Dolly",
+      "aircraft_type": "F/A-18C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Excellent",
+      "waypoints": [
+        {"x": -255000, "y": 630000, "altitude": 6000, "speed": 480, "name": "CAP Station North"},
+        {"x": -265000, "y": 620000, "altitude": 6000, "speed": 420, "name": "CAP Station South"}
+      ]
+    },
+    {
+      "name": "Strike Razor",
+      "aircraft_type": "F/A-18C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "STRIKE",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Excellent",
+      "waypoints": [
+        {"x": -252000, "y": 626000, "altitude": 500, "speed": 480, "name": "Low Level Ingress", "action": "TURNING_POINT"},
+        {"x": -285000, "y": 615000, "altitude": 5000, "speed": 450, "name": "Pop Point"},
+        {"x": -295000, "y": 608000, "altitude": 5000, "speed": 420, "name": "IP"},
+        {"x": -300000, "y": 605000, "altitude": 4500, "speed": 480, "name": "Target Run"},
+        {"x": -290000, "y": 610000, "altitude": 500, "speed": 500, "name": "Egress Low", "action": "FLY_OVER_POINT"}
+      ]
+    },
+    {
+      "name": "SEAD Viper",
+      "aircraft_type": "F-16C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "SEAD",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Excellent",
+      "waypoints": [
+        {"x": -255000, "y": 630000, "altitude": 5000, "speed": 480, "name": "IP"},
+        {"x": -290000, "y": 615000, "altitude": 5000, "speed": 480, "name": "SAM Engagement Zone"}
+      ]
+    },
+    {
+      "name": "Tanker Texaco",
+      "aircraft_type": "KC-135",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 1,
+      "task": "REFUELING",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Good",
+      "altitude": 6000,
+      "speed": 300,
+      "waypoints": [
+        {"x": -245000, "y": 635000, "altitude": 6000, "speed": 300, "name": "Tanker Track"}
+      ]
+    }
+  ],
+  "vehicles": [
+    {
+      "name": "SA-10 Radar",
+      "vehicle_type": "SA-10-SR",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -300000, "y": 605000},
+      "group_size": 1,
+      "heading": 0,
+      "skill": "Excellent"
+    },
+    {
+      "name": "SA-10 CP",
+      "vehicle_type": "SA-10-CP",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -299000, "y": 605500},
+      "group_size": 1,
+      "heading": 0,
+      "skill": "High"
+    },
+    {
+      "name": "SA-10 Launcher A",
+      "vehicle_type": "SA-10-LN",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -301000, "y": 604500},
+      "group_size": 2,
+      "heading": 90,
+      "skill": "Excellent"
+    },
+    {
+      "name": "SA-10 Launcher B",
+      "vehicle_type": "SA-10-LN",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -300000, "y": 604000},
+      "group_size": 2,
+      "heading": 270,
+      "skill": "Excellent"
+    },
+    {
+      "name": "AAA ZSU-23",
+      "vehicle_type": "ZSU-23-4",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -298000, "y": 605500},
+      "group_size": 2,
+      "heading": 180,
+      "skill": "Good"
+    },
+    {
+      "name": "Tor-M2 Escort",
+      "vehicle_type": "SA-15",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -297000, "y": 606000},
+      "group_size": 1,
+      "heading": 0,
+      "skill": "High"
+    }
+  ],
+  "ships": [
+    {
+      "name": "CG Ticonderoga",
+      "ship_type": "CG-Ticonderoga",
+      "country": "USA",
+      "side": "blue",
+      "position": {"x": -250000, "y": 640000},
+      "group_size": 1,
+      "heading": 90
+    },
+    {
+      "name": "DDG Arleigh Burke",
+      "ship_type": "Arleigh-Burke",
+      "country": "USA",
+      "side": "blue",
+      "position": {"x": -248000, "y": 639000},
+      "group_size": 1,
+      "heading": 90
+    }
+  ],
+  "weather": {
+    "season": "Summer",
+    "qnh": 760,
+    "temperature": 25,
+    "clouds_thickness": 3,
+    "clouds_density": 4,
+    "clouds_base": 1500,
+    "wind_at_ground": {"speed": 5, "dir": 270},
+    "wind_at_height": {"speed": 15, "dir": 270}
+  },
+  "agent_notes": "Mission designed for a 4-player co-op. Aircraft generated with waypoints for SAM threat axis."
+}

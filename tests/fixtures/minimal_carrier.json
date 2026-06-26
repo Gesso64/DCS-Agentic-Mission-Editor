@@ -1,0 +1,45 @@
+{
+  "name": "Carrier Ops Test",
+  "theatre": "PersianGulf",
+  "coalitions": [
+    {"side": "blue", "country": "USA"}
+  ],
+  "ships": [
+    {
+      "name": "CVN-74 Stennis",
+      "ship_type": "Stennis",
+      "country": "USA",
+      "side": "blue",
+      "position": {"x": -200000, "y": 300000},
+      "heading": 90
+    }
+  ],
+  "carrier_ops": [
+    {
+      "ship_name": "CVN-74 Stennis",
+      "tacan_channel": 74,
+      "tacan_mode": "X",
+      "tacan_callsign": "STN",
+      "icls_channel": 1,
+      "base_recovery_course": 270
+    }
+  ],
+  "flights": [
+    {
+      "name": "Carrier CAP",
+      "aircraft_type": "F/A-18C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "cold",
+      "position": {"x": -200000, "y": 305000},
+      "altitude": 3000,
+      "speed": 400,
+      "skill": "Excellent",
+      "waypoints": [
+        {"x": -200000, "y": 305000, "altitude": 3000, "speed": 400, "name": "Launch"}
+      ]
+    }
+  ]
+}

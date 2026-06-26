@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Generated mission output
+output/*.miz
+output/*.miz.report.txt
+
+# Local secrets / API keys
+.env
+.env.local
+*.key
+
+# Local Claude Code settings
+.claude/settings.local.json

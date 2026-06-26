@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcs-agentic"
+version = "0.1.0"
+description = "AI-powered DCS World mission generator"
+requires-python = ">=3.11"
+dependencies = [
+    "pydcs>=0.15",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+agents = [
+    "anthropic>=0.40",
+]
+
+[project.scripts]
+dcs-agentic = "dcs_agentic.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
