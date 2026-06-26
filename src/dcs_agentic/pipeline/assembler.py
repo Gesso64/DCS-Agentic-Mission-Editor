@@ -22,8 +22,11 @@ from dcs.terrain import Caucasus
 from ..catalog import theatres as catalog_theatres
 from ..errors import AssemblyError, AssemblyReport
 from ..schemas import MissionSpec
+from .builders.carrier_ops import build_carrier_ops
 from .builders.coalitions import build_coalitions
 from .builders.custom_scripts import build_custom_scripts
+from .builders.drawings import build_drawings
+from .builders.farps import build_farps
 from .builders.flights import build_flights
 from .builders.ground import build_ground
 from .builders.naval import build_naval
@@ -65,7 +68,10 @@ class MissionAssembler:
         build_flights(self.mission, self.spec, self.report)
         build_ground(self.mission, self.spec, self.report)
         build_naval(self.mission, self.spec, self.report)
+        build_carrier_ops(self.mission, self.spec, self.report)
         build_statics(self.mission, self.spec, self.report)
+        build_farps(self.mission, self.spec, self.report)
+        build_drawings(self.mission, self.spec, self.report)
         build_triggers(self.mission, self.spec, self.report)
         build_custom_scripts(self.mission, self.spec, self.report)
 

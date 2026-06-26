@@ -2,12 +2,48 @@
 
 from dcs import Mission
 from dcs.mapping import Point as MapPoint
+from dcs.task import OptAlarmState, OptROE
 
 from ...catalog import vehicles as catalog_vehicles
 from ...errors import AssemblyReport
 from ...schemas import MissionSpec, VehicleGroup
+from ...schemas.enums import AlarmState
 from . import skill_to_pydcs
 from .coalitions import get_or_add_country
+
+
+# AlarmState enum values are strings; pydcs OptAlarmState wants an int.
+_ALARM_STATE_TO_INT = {
+    AlarmState.AUTO: 0,
+    AlarmState.GREEN: 1,
+    AlarmState.RED: 2,
+}
+
+
+def _apply_roe(vg, roe, report, ctx: str) -> None:
+    """Append an OptROE task. roe is the ROE enum value (str)."""
+    try:
+        value = getattr(OptROE.Values, roe.value)
+    except AttributeError:
+        report.warn(
+            "ROE_UNKNOWN",
+            f"ROE '{roe.value}' has no pydcs OptROE.Values mapping; skipped",
+            context=ctx,
+        )
+        return
+    vg.tasks.append(OptROE(value=value))
+
+
+def _apply_alarm_state(vg, state, report, ctx: str) -> None:
+    int_value = _ALARM_STATE_TO_INT.get(state)
+    if int_value is None:
+        report.warn(
+            "ALARM_STATE_UNKNOWN",
+            f"AlarmState '{state}' has no integer mapping; skipped",
+            context=ctx,
+        )
+        return
+    vg.tasks.append(OptAlarmState(value=int_value))
 
 
 def build_ground(mission: Mission, spec: MissionSpec, report: AssemblyReport) -> None:
@@ -37,6 +73,12 @@ def _build_one(mission: Mission, vehicle_spec: VehicleGroup, report: AssemblyRep
 
     if vehicle_spec.skill is not None:
         vg.set_skill(skill_to_pydcs(vehicle_spec.skill))
+    if vehicle_spec.roe is not None:
+        _apply_roe(vg, vehicle_spec.roe, report, vehicle_spec.name)
+    if vehicle_spec.alarm_state is not None:
+        _apply_alarm_state(vg, vehicle_spec.alarm_state, report, vehicle_spec.name)
+    if vehicle_spec.late_activation:
+        vg.late_activation = True
     if vehicle_spec.waypoints:
         for wp_spec in vehicle_spec.waypoints:
             # pydcs's VehicleGroup.add_waypoint takes speed in km/h

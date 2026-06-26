@@ -94,12 +94,14 @@ in strict mode at the orchestrator level.
 | [`builders/coalitions.py`](../src/dcs_agentic/pipeline/builders/coalitions.py) | `build_coalitions` | Adds countries to blue/red coalitions. Also exposes `get_or_add_country()` — the helper every group builder uses to attach groups to a country. | ✅ Complete |
 | [`builders/weather.py`](../src/dcs_agentic/pipeline/builders/weather.py) | `build_weather` | Translates `spec.weather` to a pydcs `Weather` object. | ✅ Complete |
 | [`builders/flights.py`](../src/dcs_agentic/pipeline/builders/flights.py) | `build_flights` | Three spawn paths: airport, inflight, manual fallback (when DCS payload Lua files aren't available). The fallback explicitly sets `group.task` to prevent the "every flight ships as CAS" silent bug. Applies `flight_spec.payload` (preset → pylons, or explicit pylons) to every unit. | ✅ Complete |
-| [`builders/ground.py`](../src/dcs_agentic/pipeline/builders/ground.py) | `build_ground` | Vehicle groups + waypoints. | 🔶 ROE/AlarmState not yet wired |
-| [`builders/naval.py`](../src/dcs_agentic/pipeline/builders/naval.py) | `build_naval` | Ship groups + waypoints. | 🔶 CarrierOps not yet wired |
-| [`builders/statics.py`](../src/dcs_agentic/pipeline/builders/statics.py) | `build_statics` | Static objects (buildings, FARPs, dead vehicles). | ✅ Complete |
+| [`builders/ground.py`](../src/dcs_agentic/pipeline/builders/ground.py) | `build_ground` | Vehicle groups + waypoints + ROE + AlarmState + late activation. | ✅ Complete |
+| [`builders/naval.py`](../src/dcs_agentic/pipeline/builders/naval.py) | `build_naval` | Ship groups + waypoints. | ✅ Complete |
+| [`builders/carrier_ops.py`](../src/dcs_agentic/pipeline/builders/carrier_ops.py) | `build_carrier_ops` | Adds `ActivateBeaconCommand` (TACAN) to the carrier's waypoint 0. ICLS / BRC / Link-4 surface as `CARRIER_OPS_PARTIAL` warnings. | ✅ Complete (TACAN); 🔶 ICLS/BRC/Link-4 metadata only |
+| [`builders/farps.py`](../src/dcs_agentic/pipeline/builders/farps.py) | `build_farps` | Calls `mission.farp(country, name, position, …)`. `invisible=True` → `InvisibleFARP`. | ✅ Complete |
+| [`builders/drawings.py`](../src/dcs_agentic/pipeline/builders/drawings.py) | `build_drawings` | Zones → filled `add_circle` + label `add_text_box` on Common layer. Markers → `add_text_box` on Blue/Red/Common per `coalition`. | ✅ Complete |
+| [`builders/statics.py`](../src/dcs_agentic/pipeline/builders/statics.py) | `build_statics` | Static objects (buildings, dead vehicles). | ✅ Complete |
 | [`builders/triggers.py`](../src/dcs_agentic/pipeline/builders/triggers.py) | `build_triggers` | Maps `TriggerKind`/`ActionKind` → pydcs `condition.*`/`action.*`; uses `TriggerOnce`/`TriggerContinious`; `MessageToCoalition` when `trigger.coalition` is set; group/unit/zone refs resolved by name with warn-and-skip on misses. | ✅ Complete |
 | [`builders/custom_scripts.py`](../src/dcs_agentic/pipeline/builders/custom_scripts.py) | `build_custom_scripts` | Wires init script content / file path. | ✅ Complete |
-| **`builders/drawings.py`** | `build_drawings` | **Not yet implemented.** Zones and map markers. | ❌ Missing |
 
 ### Shared helpers (`builders/__init__.py`)
 
@@ -127,26 +129,26 @@ The four enum mappers used by multiple builders:
    local zone — don't.
 3. **Coalitions** — `build_coalitions`.
 4. **Weather** — `build_weather` (only if `spec.weather` is set).
-5. **Flights** — `build_flights`.
-6. **Vehicles** — `build_ground`.
+5. **Flights** — `build_flights` (incl. payload application).
+6. **Vehicles** — `build_ground` (incl. ROE, AlarmState, late activation).
 7. **Ships** — `build_naval`.
-8. **Statics** — `build_statics`.
-9. **Triggers** — `build_triggers`. Conditions and actions are
-   translated to pydcs classes; rules are appended to
-   `mission.triggerrules.triggers`.
-10. **Custom scripts** — `build_custom_scripts`.
-11. **Strict check** — if `strict=True` and `report.has_errors()`, raise `AssemblyError`.
+8. **Carrier ops** — `build_carrier_ops` (TACAN beacon on waypoint 0).
+9. **Statics** — `build_statics`.
+10. **FARPs** — `build_farps`.
+11. **Drawings** — `build_drawings` (zones + markers).
+12. **Triggers** — `build_triggers`. Conditions and actions are
+    translated to pydcs classes; rules are appended to
+    `mission.triggerrules.triggers`.
+13. **Custom scripts** — `build_custom_scripts`.
+14. **Strict check** — if `strict=True` and `report.has_errors()`, raise `AssemblyError`.
 
-### Remaining builder work (Phase 4 tail)
+### Builder status — Phase 4
 
-Payload application is now inside [`builders/flights.py`](../src/dcs_agentic/pipeline/builders/flights.py) (`_apply_payload`)
-rather than a separate builder. Outstanding:
-
-| Builder | When it should run | What it consumes |
-|---|---|---|
-| `build_drawings` | After statics | `spec.zones`, `spec.markers` → pydcs drawing objects |
-| `build_farps` | After ground | `spec.farps` → FARP static objects |
-| `build_carrier_ops` | After ships | `spec.carrier_ops` → TACAN/ICLS/BRC on carriers |
+Payload application is inside [`builders/flights.py`](../src/dcs_agentic/pipeline/builders/flights.py) (`_apply_payload`).
+The remaining Phase-4 builders (drawings, FARPs, carrier ops) all
+landed in this iteration. The only outstanding gap is ICLS / BRC /
+Link-4 metadata on carriers — emitted as `CARRIER_OPS_PARTIAL`
+warnings until pydcs surfaces an API for them.
 
 **Known conversion required in Phase 4:**
 - `AlarmState` enum values ("Green"/"Red"/"Auto") must be mapped to integers (0/1/2) when constructing pydcs `OptAlarmState(value=...)`.
@@ -229,6 +231,20 @@ agents may match on them.
 | `SHIP_BUILD_FAILED` | error | `build_naval` | |
 | `STATIC_CREATED` | info | `build_statics` | |
 | `STATIC_BUILD_FAILED` | error | `build_statics` | |
+| `FARP_CREATED` | info | `build_farps` | |
+| `FARP_BUILD_FAILED` | error | `build_farps` | |
+| `ROE_UNKNOWN` | warning | `build_ground` | `ROE` enum value has no `OptROE.Values` mapping |
+| `ALARM_STATE_UNKNOWN` | warning | `build_ground` | `AlarmState` enum value has no int mapping |
+| `CARRIER_OPS_CREATED` | info | `build_carrier_ops` | TACAN beacon attached |
+| `CARRIER_OPS_PARTIAL` | warning | `build_carrier_ops` | ICLS / BRC / Link-4 dropped (pydcs API gap) |
+| `CARRIER_OPS_BUILD_FAILED` | error | `build_carrier_ops` | |
+| `CARRIER_NOT_FOUND` | error | `build_carrier_ops` | `ship_name` doesn't match any ship group |
+| `CARRIER_NO_WAYPOINTS` | warning | `build_carrier_ops` | carrier has no waypoint to attach beacon to |
+| `ZONE_CREATED` | info | `build_drawings` | |
+| `ZONE_BUILD_FAILED` | error | `build_drawings` | |
+| `MARKER_CREATED` | info | `build_drawings` | |
+| `MARKER_BUILD_FAILED` | error | `build_drawings` | |
+| `MARKER_LAYER_UNKNOWN` | warning | `build_drawings` | `marker.coalition` doesn't map to a standard layer; fell back to Common |
 | `TRIGGER_CREATED` | info | `build_triggers` | trigger rule built |
 | `TRIGGER_BUILD_FAILED` | error | `build_triggers` | exception during trigger construction |
 | `TRIGGER_NO_VALID_CONDITIONS` | warning | `build_triggers` | all conditions failed to resolve; rule skipped |

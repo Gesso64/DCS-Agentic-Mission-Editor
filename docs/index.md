@@ -18,9 +18,9 @@ conventions, see [`CLAUDE.md`](../CLAUDE.md).
 
 ## What works today
 
-Phases 1–3, 5, 6, 8, 9, 10 of [`PLAN.md`](../PLAN.md) are complete.
-Phases 4 and 7 are partial (Phase 4 covers payload application; Phase 7
-covers the validation layer).
+Phases 1–6, 8, 9, 10 of [`PLAN.md`](../PLAN.md) are complete.
+Phase 7 (validation layer) is partial — coordinate / weapons / route
+checks ship; more checks pending.
 
 - **Declarative `MissionSpec`** (Pydantic) covers flights, vehicles, ships,
   statics, weather, briefing, custom Lua scripts, payloads, bullseye,
@@ -31,8 +31,9 @@ covers the validation layer).
   to per-concern builders under `pipeline/builders/`. All 8 supported
   theatres work.
 - **Per-concern builders** for coalitions, weather, flights (with payload
-  preset application), ground, naval, statics, **triggers (Phase 5)**,
-  and custom scripts.
+  preset application), ground (with ROE/AlarmState), naval, **carrier
+  ops** (TACAN beacon), statics, **FARPs**, **drawings** (zones +
+  markers), **triggers (Phase 5)**, and custom scripts.
 - **Catalog** includes fully-structured metadata for aircraft (with role
   tags, combat radius, player-flyable flags), vehicles (with role tags
   for SAM/AAA/artillery/armor), ships, statics, countries, and theatres
@@ -59,17 +60,17 @@ covers the validation layer).
 - **Phase 8/9/10 agents** — `design_mission`, `edit_mission`, and
   `design_campaign` + `render_mission` plus a 19-tool editor surface
   (`apply_tool` dispatcher). See [`agents.md`](agents.md).
-- **46 pytest tests** cover the assembler, schema drift, agent tool
-  dispatch with stub LLMs, prompt rendering, trigger build, and `.miz`
-  round-trip. All pass.
+- **54 pytest tests** cover the assembler, schema drift, agent tool
+  dispatch with stub LLMs, prompt rendering, trigger build, `.miz`
+  round-trip, and the Phase 4 tail (ROE/AlarmState, FARPs, carrier
+  TACAN, drawings). All pass.
 
 ## What does not work yet
 
 | Area | Status | Phase |
 |---|---|---|
-| Drawings builder (zones, markers) | Schema done; no builder yet | 4 |
-| ROE/AlarmState/CarrierOps builders | Schema done; not wired into ground/naval builders | 4 |
 | Validation layer (full coverage) | `validation/` ships coordinate/weapons/route checks; more checks pending | 7 |
+| Carrier ops: ICLS / BRC / Link-4 | Schema done; TACAN works; others surface as `CARRIER_OPS_PARTIAL` until pydcs has the API | 4 |
 | After-action parsing from DCS/TacView | `parse_lua_callback`/`parse_tacview` are `NotImplementedError` | 11 |
 | Trigger reverse-import (`.miz` → spec) | Importer warns and drops triggers; round-trip from spec→miz→spec→miz loses them | 6 (followup) |
 | Live LLM smoke tests | Agent tests use stub LLMs; no integration test hits a real model | 8/9 |
