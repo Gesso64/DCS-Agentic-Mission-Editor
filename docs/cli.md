@@ -14,9 +14,13 @@ dcs-agentic <subcommand> [flags]              # if installed via `pip install -e
 |---|---|
 | `build` | Build a `.miz` from a JSON `MissionSpec` file |
 | `validate` | Run validation checks over a JSON spec without assembling |
+| `inspect` | Show a summary of a `.miz` or `MissionSpec` JSON |
+| `list` | Browse the catalog (aircraft, vehicles, payloads, theatres, …) |
 | `design` | Use an LLM to create a mission from a natural-language prompt |
 | `edit` | Edit an existing mission (`.miz` or `spec.json`) via LLM tool calls |
 | `campaign` | Initialize, run, report, and inspect multi-mission campaigns |
+
+`--version` and `--help` are available at every level.
 
 Each subcommand prints a usage banner via `--help`.
 
@@ -50,6 +54,38 @@ warnings also fail.
 |---|---|
 | `SPEC_FILE` | Path to a JSON mission spec (positional, required) |
 | `--strict` | Treat warnings as failures |
+
+## `inspect`
+
+```
+dcs-agentic inspect INPUT [--json]
+```
+
+Reads a `.miz` (via the importer) or a JSON spec and prints a section-by-section
+summary: coalitions, flights, vehicles, ships, statics, FARPs, carrier ops,
+triggers, zones, markers. `--json` dumps the full spec instead of the summary.
+
+## `list`
+
+```
+dcs-agentic list {aircraft|vehicles|ships|statics|payloads|theatres|airports|callsigns} [filters]
+```
+
+Browse the bundled catalog. Useful when authoring specs by hand.
+
+| Flag | Applies to | Description |
+|---|---|---|
+| `--role` | aircraft / vehicles | Filter by role tag (e.g. `cap`, `sam`, `strike`) |
+| `--aircraft` | payloads | Show presets for one aircraft alias |
+| `--theatre` | airports | Show airports for one theatre |
+
+Examples:
+```
+dcs-agentic list aircraft --role cap
+dcs-agentic list payloads --aircraft F/A-18C
+dcs-agentic list airports --theatre Caucasus
+dcs-agentic list callsigns
+```
 
 ## `design`
 

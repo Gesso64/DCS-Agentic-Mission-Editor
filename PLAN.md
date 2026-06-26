@@ -36,7 +36,7 @@ a first-class concept, not a stretch goal.
 | 9. Agent v2 (editor) | ✅ **DONE** | 19 tools wired through `apply_tool` dispatcher; tool_use/tool_result history threaded correctly; full offline tool-surface tests |
 | 10. Campaign | ✅ **DONE** | `CampaignRunner` load/record/branch + `design_campaign` + `render_mission` via Jinja templates; CLI `campaign init/run/report/inspect` |
 | 11. After-action | ✅ **DONE** | `LUA_HOOK_SCRIPT` + `parse_lua_callback` + `parse_tacview` + `load_outcome` autodispatch; CLI `report --from <file>` |
-| 12. CLI polish | ⬜ TODO | |
+| 12. CLI polish | ✅ **DONE** | `inspect`, `list`, `--version`; bundled examples (cap, strike+SEAD, carrier ops); `docs/architecture.md`; jinja2 in `[agents]` extras |
 
 ---
 

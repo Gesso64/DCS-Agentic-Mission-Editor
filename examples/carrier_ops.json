@@ -1,0 +1,46 @@
+{
+  "name": "Carrier Ops",
+  "theatre": "Caucasus",
+  "sortie": "CV-01",
+  "coalitions": [
+    {"side": "blue", "country": "USA"}
+  ],
+  "briefing": {
+    "description": "CVN ops demo. Hornet launches off the Stennis with TACAN ch 72X 'WSH'.",
+    "blue_task": "Launch, transit to overhead, return."
+  },
+  "ships": [
+    {
+      "name": "CVN-74",
+      "ship_type": "Stennis",
+      "country": "USA", "side": "blue",
+      "position": {"x": -290000, "y": 590000},
+      "group_size": 1, "heading": 180
+    }
+  ],
+  "carrier_ops": [
+    {
+      "ship_name": "CVN-74",
+      "tacan_channel": 72,
+      "tacan_mode": "X",
+      "tacan_callsign": "WSH",
+      "icls_channel": 11,
+      "base_recovery_course": 174.0,
+      "link4_mhz": 336.0
+    }
+  ],
+  "flights": [
+    {
+      "name": "Diamond 1",
+      "aircraft_type": "F/A-18C",
+      "country": "USA", "side": "blue",
+      "group_size": 2, "task": "CAP", "start_type": "cold",
+      "airport": "Batumi", "skill": "Excellent",
+      "payload": {"preset_name": "CAP A-A"},
+      "waypoints": [
+        {"x": -285000, "y": 595000, "altitude": 6000, "speed": 480, "name": "Overhead"},
+        {"x": -291000, "y": 591000, "altitude": 600,  "speed": 250, "name": "Recovery"}
+      ]
+    }
+  ]
+}

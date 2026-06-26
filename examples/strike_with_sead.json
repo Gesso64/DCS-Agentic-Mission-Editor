@@ -1,0 +1,75 @@
+{
+  "name": "SA-11 Strike",
+  "theatre": "Caucasus",
+  "sortie": "STRIKE-01",
+  "coalitions": [
+    {"side": "blue", "country": "USA"},
+    {"side": "red",  "country": "Russia"}
+  ],
+  "briefing": {
+    "description": "Strike Bandit Site Alpha — an SA-11 battery near the FLOT. Hornets carry GBU-38s; Vipers SEAD with HARMs.",
+    "blue_task": "Destroy SA-11 site, then RTB Batumi.",
+    "red_task":  "Defend SA-11 site. Engage strike package."
+  },
+  "flights": [
+    {
+      "name": "Strike Lead",
+      "aircraft_type": "F/A-18C",
+      "country": "USA", "side": "blue",
+      "group_size": 2, "task": "STRIKE", "start_type": "cold",
+      "airport": "Batumi", "skill": "Excellent",
+      "payload": {"preset_name": "STRIKE GBU-38"},
+      "waypoints": [
+        {"x": -250000, "y": 625000, "altitude": 5000, "speed": 420, "name": "IP"},
+        {"x": -272000, "y": 614000, "altitude": 4500, "speed": 420, "name": "Target"},
+        {"x": -260000, "y": 620000, "altitude": 3000, "speed": 420, "name": "Egress"}
+      ]
+    },
+    {
+      "name": "SEAD Escort",
+      "aircraft_type": "F-16C",
+      "country": "USA", "side": "blue",
+      "group_size": 2, "task": "SEAD", "start_type": "cold",
+      "airport": "Batumi", "skill": "Excellent",
+      "payload": {"preset_name": "STRIKE GBU-38"},
+      "waypoints": [
+        {"x": -250000, "y": 625000, "altitude": 6000, "speed": 480, "name": "IP"},
+        {"x": -271000, "y": 614500, "altitude": 5500, "speed": 480, "name": "SAM Suppression"}
+      ]
+    }
+  ],
+  "vehicles": [
+    {
+      "name": "SA-11 LN",
+      "vehicle_type": "SA-11-LN",
+      "country": "Russia", "side": "red",
+      "position": {"x": -272000, "y": 614000},
+      "group_size": 2, "heading": 45, "skill": "High",
+      "roe": "WeaponFree", "alarm_state": "Red"
+    },
+    {
+      "name": "SA-11 SR",
+      "vehicle_type": "SA-11-SR",
+      "country": "Russia", "side": "red",
+      "position": {"x": -271000, "y": 614500},
+      "group_size": 1, "skill": "High",
+      "roe": "WeaponFree", "alarm_state": "Red"
+    },
+    {
+      "name": "SA-11 CP",
+      "vehicle_type": "SA-11-CP",
+      "country": "Russia", "side": "red",
+      "position": {"x": -272500, "y": 614000},
+      "group_size": 1, "skill": "High",
+      "alarm_state": "Red"
+    }
+  ],
+  "zones": [
+    {
+      "name": "TGT SA-11",
+      "center": {"x": -272000, "y": 614000},
+      "radius": 3000.0,
+      "color": "rgba(255,0,0,0.4)"
+    }
+  ]
+}

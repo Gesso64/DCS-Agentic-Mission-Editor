@@ -1,0 +1,47 @@
+{
+  "name": "Batumi CAP",
+  "theatre": "Caucasus",
+  "sortie": "CAP-01",
+  "coalitions": [
+    {"side": "blue", "country": "USA"},
+    {"side": "red",  "country": "Russia"}
+  ],
+  "briefing": {
+    "description": "2-ship CAP over Batumi. Hostile bandits inbound from the north.",
+    "blue_task": "Establish CAP. Intercept any hostile aircraft entering Batumi airspace.",
+    "red_task":  "Air defense alert. Probe blue CAP and report contacts."
+  },
+  "flights": [
+    {
+      "name": "Eagle 1",
+      "aircraft_type": "F/A-18C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Excellent",
+      "payload": {"preset_name": "CAP A-A"},
+      "waypoints": [
+        {"x": -255000, "y": 630000, "altitude": 5000, "speed": 480, "name": "CAP North"},
+        {"x": -265000, "y": 620000, "altitude": 5000, "speed": 480, "name": "CAP South"}
+      ]
+    },
+    {
+      "name": "Bandit 1",
+      "aircraft_type": "Su-27",
+      "country": "Russia",
+      "side": "red",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "cold",
+      "airport": "Sochi-Adler",
+      "skill": "Good",
+      "payload": {"preset_name": "CAP A-A"},
+      "waypoints": [
+        {"x": -230000, "y": 660000, "altitude": 4500, "speed": 450, "name": "Patrol"}
+      ]
+    }
+  ]
+}

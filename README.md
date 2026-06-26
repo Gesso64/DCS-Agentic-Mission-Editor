@@ -7,11 +7,12 @@ state.
 
 ## Status
 
-Single-mission generation, `.miz` round-trip importer, trigger builder,
-and the three agents (designer / editor / campaign architect) all work.
-Phase 4 tail (drawings, FARP, carrier ops builders) and Phase 11
-(after-action parsing) are still TODO. See [`PLAN.md`](PLAN.md) for the
-full phase tracker.
+All 12 phases of [`PLAN.md`](PLAN.md) are complete: single-mission
+generation, `.miz` round-trip importer, full trigger builder, full
+Phase-4 builders (payloads, ROE/AlarmState, FARPs, drawings, carrier
+TACAN), the three agents (designer / editor / campaign architect),
+the validation layer, after-action parsing (Lua hook + TacView), and
+CLI polish (`inspect`, `list`, `--version`). 88 tests pass.
 
 ## Install
 
@@ -54,12 +55,15 @@ pytest tests/
 | Doc | Covers |
 |---|---|
 | [`docs/index.md`](docs/index.md) | Orientation + what works / what doesn't |
+| [`docs/architecture.md`](docs/architecture.md) | Module map + conventions + build order |
 | [`docs/schema-reference.md`](docs/schema-reference.md) | Every Pydantic model and field |
 | [`docs/cli.md`](docs/cli.md) | CLI subcommands (`build`, `design`, `edit`, `campaign`) |
 | [`docs/pipeline.md`](docs/pipeline.md) | `MissionAssembler` + builders + error codes |
 | [`docs/catalog.md`](docs/catalog.md) | Aircraft / vehicle / ship / country aliases |
 | [`docs/agents.md`](docs/agents.md) | Designer / editor / campaign agents + 19-tool surface |
 | [`docs/importer.md`](docs/importer.md) | `.miz → MissionSpec` reverse-pipeline |
+| [`docs/validation.md`](docs/validation.md) | Phase 7 validation layer |
+| [`docs/after_action.md`](docs/after_action.md) | Phase 11 outcome parsing (Lua hook, TacView) |
 | [`docs/examples.md`](docs/examples.md) | Walkthrough of the bundled examples |
 | [`PLAN.md`](PLAN.md) | Forward-looking build plan (12 phases) |
 | [`CLAUDE.md`](CLAUDE.md) | Conventions for any Claude session in this repo |

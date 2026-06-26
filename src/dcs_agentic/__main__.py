@@ -18,6 +18,14 @@ import argparse
 import sys
 
 
+def _version() -> str:
+    try:
+        from importlib.metadata import version
+        return version("dcs-agentic")
+    except Exception:
+        return "0.0.0+unknown"
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="DCS Agentic Mission Editor - Generate .miz files from mission specs"
@@ -35,9 +43,18 @@ def main():
 
     # Built-in commands
     from .cli import build as build_module
+    from .cli import inspect as inspect_module
+    from .cli import list_catalog as list_catalog_module
     from .cli import validate as validate_module
     build_module.register_subcommand(subparsers)
     validate_module.register_subcommand(subparsers)
+    inspect_module.register_subcommand(subparsers)
+    list_catalog_module.register_subcommand(subparsers)
+
+    parser.add_argument(
+        "--version", action="version",
+        version=f"dcs-agentic {_version()}",
+    )
 
     args = parser.parse_args()
 
