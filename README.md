@@ -162,3 +162,9 @@ pytest tests/
 
 Read [`CLAUDE.md`](CLAUDE.md) first — it documents the conventions every
 session (human or AI) in this repo must follow.
+
+## License
+
+Proprietary — All Rights Reserved. See [`LICENSE`](LICENSE). This is a
+private project; access to the repository does not grant a license to
+the code.

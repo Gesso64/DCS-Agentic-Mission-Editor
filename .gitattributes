@@ -1,0 +1,27 @@
+# Normalize line endings. Text files store as LF in the repo;
+# Windows working copies get CRLF on checkout via core.autocrlf=true.
+* text=auto eol=lf
+
+# Force LF on shell scripts and config files even on Windows.
+*.sh        text eol=lf
+*.py        text eol=lf
+*.md        text eol=lf
+*.json      text eol=lf
+*.toml      text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.cfg       text eol=lf
+*.ini       text eol=lf
+.gitignore  text eol=lf
+.gitattributes text eol=lf
+
+# Treat .miz (zipped Lua bundle) and other binaries as binary.
+*.miz   binary
+*.acmi  binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary
