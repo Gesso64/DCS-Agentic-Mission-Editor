@@ -1,4 +1,4 @@
-"""CLI command: inspect — show what's in a .miz file or JSON spec."""
+"""CLI command: inspect -show what's in a .miz file or JSON spec."""
 
 import argparse
 import json
@@ -30,7 +30,7 @@ def run(args: argparse.Namespace) -> None:
 
     path = Path(args.input)
     if not path.exists():
-        print(f"❌ File not found: {args.input}", file=sys.stderr)
+        print(f"ERROR: File not found: {args.input}", file=sys.stderr)
         sys.exit(1)
 
     if path.suffix.lower() == ".miz":
@@ -63,14 +63,14 @@ def _print_summary(spec) -> None:
     _section("Coalitions", spec.coalitions,
              lambda c: f"{c.side}: {c.country}")
     _section("Flights", spec.flights,
-             lambda f: f"{f.name} — {f.aircraft_type} ×{f.group_size or 1} "
+             lambda f: f"{f.name} -{f.aircraft_type} x{f.group_size or 1} "
                        f"({f.task.value if f.task else '?'}) from {f.airport or 'inflight'}")
     _section("Vehicles", spec.vehicles,
-             lambda v: f"{v.name} — {v.vehicle_type} ×{v.group_size or 1} ({v.side})")
+             lambda v: f"{v.name} -{v.vehicle_type} x{v.group_size or 1} ({v.side})")
     _section("Ships", spec.ships,
-             lambda s: f"{s.name} — {s.ship_type} ×{s.group_size or 1} ({s.side})")
+             lambda s: f"{s.name} -{s.ship_type} x{s.group_size or 1} ({s.side})")
     _section("Statics", spec.statics,
-             lambda s: f"{s.name} — {s.type} ({s.side})")
+             lambda s: f"{s.name} -{s.type} ({s.side})")
     _section("FARPs", spec.farps,
              lambda f: f"{f.name} ({'invisible' if f.invisible else 'visible'}) at "
                        f"({f.position.x:.0f}, {f.position.y:.0f})")
@@ -89,6 +89,6 @@ def _section(title, items, fmt):
     items = items or []
     print(f"\n{title} ({len(items)}):")
     if not items:
-        print("  —")
+        print("  (none)")
     for it in items:
-        print(f"  • {fmt(it)}")
+        print(f"  - {fmt(it)}")

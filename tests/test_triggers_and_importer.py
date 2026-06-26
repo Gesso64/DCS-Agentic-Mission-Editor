@@ -1,4 +1,10 @@
-"""Phase 5 trigger builder + Phase 6 importer tests."""
+"""Phase 5 trigger builder + Phase 6 importer tests.
+
+Round-trip regression bench. The importer used to:
+  - read the briefing.description as MissionSpec.name (bug)
+  - drop FlightGroup.task and .airport / .start_type (bug)
+The tests below pin the fixes.
+"""
 import os
 from pathlib import Path
 
@@ -188,3 +194,43 @@ def test_import_missing_file_reports_error(tmp_path):
     spec, report = import_miz(str(tmp_path / "nope.miz"))
     assert report.has_errors()
     assert any(i.code == "MIZ_NOT_FOUND" for i in report.issues)
+
+
+def test_import_name_is_not_briefing_description(round_trip_miz):
+    """Regression: importer used to read briefing.description as the
+    mission name. The name should now be the .miz filename stem."""
+    spec, _ = import_miz(str(round_trip_miz))
+    assert spec.name == round_trip_miz.stem
+    # Sanity: briefing description, if present, must be a different value.
+    if spec.briefing and spec.briefing.description:
+        assert spec.briefing.description != spec.name
+
+
+def test_import_flight_task_and_airport_round_trip(round_trip_miz):
+    """Regression: task and airport / start_type were being dropped."""
+    spec, _ = import_miz(str(round_trip_miz))
+    eagle = next((f for f in (spec.flights or []) if f.name == "Alpha"), None)
+    assert eagle is not None
+    assert eagle.task == TaskType.CAP
+    assert eagle.airport == "Batumi"
+    assert eagle.start_type == StartType.COLD
+
+
+def test_weapons_match_handles_russian_uuid_clsids():
+    """Regression: Su-27 CAP A-A uses opaque pydcs UUID CLSIDs; the
+    validator must look up the human name, not substring-match the UUID."""
+    from dcs_agentic.schemas import PayloadSpec
+    from dcs_agentic.validation import validate
+
+    spec = MissionSpec(
+        name="Su27Test", theatre="Caucasus",
+        coalitions=[Coalition(side="red", country="Russia")],
+        flights=[FlightGroup(
+            name="Su27", aircraft_type="Su-27", country="Russia", side="red",
+            group_size=1, task=TaskType.CAP, start_type=StartType.COLD,
+            airport="Sochi-Adler",
+            payload=PayloadSpec(preset_name="CAP A-A"),
+        )],
+    )
+    report = validate(spec)
+    assert not any(i.code == "WEAPONS_TASK_MISMATCH" for i in report.issues)

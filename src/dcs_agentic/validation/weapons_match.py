@@ -18,19 +18,42 @@ ASM = {"AGM-84", "AGM-158", "Kh-35", "3M-54", "Exocet", "Harpoon"}
 CAS = {"AGM-65", "AGM-114", "Vikhr", "BGM-71", "S-8", "S-13", "Rocket"}
 
 
+# pydcs uses opaque UUIDs for many Russian weapons (e.g. R-27R is
+# {9B25D316-...}). The human-readable name lives on the Weapons
+# attribute name (R_27R_AAM…). Build a reverse map once.
+_CLSID_TO_NAME: dict[str, str] | None = None
+
+
+def _clsid_to_name(clsid: str) -> str:
+    """Return the Weapons attribute name for a CLSID, or the CLSID itself."""
+    global _CLSID_TO_NAME
+    if _CLSID_TO_NAME is None:
+        from dcs.weapons_data import Weapons
+        m: dict[str, str] = {}
+        for attr in dir(Weapons):
+            if attr.startswith("_"):
+                continue
+            val = getattr(Weapons, attr)
+            cls = val.get("clsid") if isinstance(val, dict) else None
+            if cls:
+                m[cls.upper()] = attr.replace("_", "-").upper()
+        _CLSID_TO_NAME = m
+    return _CLSID_TO_NAME.get(clsid.upper(), clsid.upper())
+
+
 def _weapons_for_flight(flight):
-    """Return a set of weapon name fragments (uppercase) for matching."""
+    """Return a set of weapon display names (uppercase) for matching."""
     p = flight.payload
     if p is None:
         return None
     if p.pylons:
-        return {item.clsid.upper() for item in p.pylons}
+        return {_clsid_to_name(item.clsid) for item in p.pylons}
     if p.preset_name:
         try:
             preset = catalog_payloads.resolve(flight.aircraft_type, p.preset_name)
         except ValueError:
             return None
-        return {clsid.upper() for (_, clsid, _) in preset.pylons}
+        return {_clsid_to_name(clsid) for (_, clsid, _) in preset.pylons}
     return None
 
 

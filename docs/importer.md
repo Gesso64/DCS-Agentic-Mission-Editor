@@ -25,7 +25,10 @@ on the report, not raised — call sites decide whether to proceed.
 | `briefing` | ✅ | description / blue_task / red_task strings |
 | `coalitions` | ✅ | Only countries that own at least one group |
 | `flights` (name, type, country, side, size) | ✅ | |
-| `flights.waypoints` | ✅ | x, y, altitude; speed converted from m/s back to km/h |
+| `flights.task` | ✅ | Reverse-maps `g.task` string (e.g. `"CAP"`) to `TaskType.CAP` |
+| `flights.airport` | ✅ | Resolved via the loaded terrain's `airports` dict (airdrome_id → name) |
+| `flights.start_type` | ✅ | Inferred from first-waypoint action: `FromParkingArea` → COLD, `FromParkingAreaHot` → WARM, `FromRunway` → RUNWAY |
+| `flights.waypoints` | ✅ | x, y, altitude; speed converted from m/s back to km/h. Parking spawn point is omitted when airport is set. |
 | `flights.payload.pylons` | ✅ | Pylon dict → `Pylon(station, clsid, quantity=1)` |
 | `flights.aircraft_type` alias upgrade | ✅ | Reverse-maps pydcs `unit_type.id` (e.g. `FA-18C_hornet`) to friendly alias (e.g. `F/A-18C`) when one exists |
 | `vehicles` | ✅ | name, type, country, side, position, group_size, heading |

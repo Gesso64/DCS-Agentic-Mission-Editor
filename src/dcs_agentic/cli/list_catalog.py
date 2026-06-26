@@ -88,6 +88,6 @@ def _print(header, items):
     items = list(items)
     print(f"\n{header} ({len(items)}):")
     if not items:
-        print("  —")
+        print("  (none)")
     for it in items:
-        print(f"  • {it}")
+        print(f"  - {it}")

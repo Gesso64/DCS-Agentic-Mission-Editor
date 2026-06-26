@@ -39,10 +39,12 @@ from ..schemas import (
     Position,
     Pylon,
     ShipGroup,
+    StartType,
     StaticObject,
     VehicleGroup,
     Waypoint,
 )
+from ..schemas.enums import TaskType
 from ..schemas.briefing import Briefing
 from ..units import ms_to_kmh
 
@@ -132,12 +134,19 @@ def import_miz(path: str) -> Tuple[MissionSpec, AssemblyReport]:
     for s in status or []:
         report.warn("MIZ_LOAD_STATUS", str(s))
 
-    spec_name = mission.translation.get_string(
-        getattr(mission, "_description_text", None).id
-    ) if hasattr(mission, "_description_text") and mission._description_text else p.stem
+    # Build airdrome_id → name cache for the loaded terrain.
+    _AIRPORT_NAME_CACHE.clear()
+    for ap_name, ap_obj in getattr(mission.terrain, "airports", {}).items():
+        ap_id = getattr(ap_obj, "id", None)
+        if ap_id is not None:
+            _AIRPORT_NAME_CACHE[ap_id] = ap_name
+
+    # pydcs has no explicit "mission name" field; the .miz title is implicit
+    # in the filename. Don't confuse it with the briefing description.
+    spec_name = p.stem
 
     spec = MissionSpec(
-        name=str(spec_name) if spec_name else p.stem,
+        name=spec_name,
         theatre=_theatre_name(mission),
         start_time=_start_time(mission),
         sortie=_lookup_str(mission, "_sortie"),
@@ -244,31 +253,69 @@ def _flights(mission: Mission, report: AssemblyReport) -> Optional[List[FlightGr
     return out or None
 
 
+_TASK_STRING_TO_TYPE = {t.value: t for t in TaskType}
+
+_ACTION_TO_START_TYPE = {
+    "FromParkingArea": StartType.COLD,
+    "FromParkingAreaHot": StartType.WARM,
+    "FromRunway": StartType.RUNWAY,
+}
+
+
 def _flight_from_group(g, side: str, country: str) -> FlightGroup:
     unit = g.units[0]
     pydcs_id = getattr(unit.unit_type, "id", str(unit.unit_type))
-    waypoints = [
-        Waypoint(
+    waypoints: List[Waypoint] = []
+    airport_id: Optional[int] = None
+    start_type: Optional[StartType] = None
+    for idx, p in enumerate(g.points):
+        if idx == 0:
+            airport_id = getattr(p, "airdrome_id", None)
+            action_name = None
+            action = getattr(p, "action", None)
+            if action is not None:
+                action_name = getattr(action, "name", None) or str(action).rsplit(".", 1)[-1]
+            if action_name and action_name in _ACTION_TO_START_TYPE:
+                start_type = _ACTION_TO_START_TYPE[action_name]
+            # The first point is the spawn/parking marker; skip it as a waypoint
+            # only if it has no name and lies on the airport.
+            if airport_id is not None and not getattr(p, "name", None):
+                continue
+        waypoints.append(Waypoint(
             x=float(p.position.x),
             y=float(p.position.y),
             altitude=int(p.alt) if p.alt is not None else None,
             speed=ms_to_kmh(p.speed) if p.speed else None,
             name=getattr(p, "name", None) or None,
-        )
-        for p in g.points
-    ]
+        ))
     payload = _payload_from_unit(unit)
+    task_str = getattr(g, "task", None)
+    task = _TASK_STRING_TO_TYPE.get(task_str.upper() if task_str else "")
     return FlightGroup(
         name=g.name,
         aircraft_type=_aircraft_alias_for(pydcs_id),
         country=country,
         side=side,
         group_size=len(g.units),
-        airport=None,
-        position=Position(x=float(unit.position.x), y=float(unit.position.y)),
+        task=task,
+        start_type=start_type,
+        airport=_airport_name(airport_id) if airport_id else None,
+        position=None if airport_id else Position(
+            x=float(unit.position.x), y=float(unit.position.y)
+        ),
         waypoints=waypoints or None,
         payload=payload,
     )
+
+
+# pydcs airdrome_id → human name. Lazily built per terrain.
+_AIRPORT_NAME_CACHE: Dict[int, str] = {}
+
+
+def _airport_name(airdrome_id: int) -> Optional[str]:
+    """Best-effort: not all terrains are loaded at import time. The cache
+    is populated by import_miz once the mission's terrain is known."""
+    return _AIRPORT_NAME_CACHE.get(airdrome_id)
 
 
 def _payload_from_unit(unit) -> Optional[PayloadSpec]:

@@ -6,8 +6,8 @@
     {"side": "blue", "country": "USA"}
   ],
   "briefing": {
-    "description": "CVN ops demo. Hornet launches off the Stennis with TACAN ch 72X 'WSH'.",
-    "blue_task": "Launch, transit to overhead, return."
+    "description": "CVN ops demo. Stennis broadcasts TACAN ch 72X 'WSH'; a Hornet pair flies CAP overhead and returns to recovery.",
+    "blue_task": "Establish CAP overhead the carrier, return for recovery."
   },
   "ships": [
     {

@@ -100,7 +100,13 @@ function handler:onEvent(e)
         end
     elseif e.id == world.event.S_EVENT_MISSION_END then
         dcs_agentic.duration = timer.getTime() - dcs_agentic.start_time
-        local mission_name = env.mission.theatre or "mission"
+        -- DCS Lua has no direct "mission name"; use the .miz filename minted
+        -- by env.getValueDictByKey when available, else fall back to "mission".
+        local mission_name = "mission"
+        if env.mission and env.mission.sortie then
+            mission_name = env.mission.sortie
+        end
+        dcs_agentic.mission_name = mission_name
         local outpath = lfs.writedir() .. "Logs/" .. mission_name .. ".outcome.json"
         local f = io.open(outpath, "w")
         if f then

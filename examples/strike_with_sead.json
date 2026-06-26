@@ -27,11 +27,11 @@
     },
     {
       "name": "SEAD Escort",
-      "aircraft_type": "F-16C",
+      "aircraft_type": "F/A-18C",
       "country": "USA", "side": "blue",
       "group_size": 2, "task": "SEAD", "start_type": "cold",
       "airport": "Batumi", "skill": "Excellent",
-      "payload": {"preset_name": "STRIKE GBU-38"},
+      "payload": {"preset_name": "SEAD HARM"},
       "waypoints": [
         {"x": -250000, "y": 625000, "altitude": 6000, "speed": 480, "name": "IP"},
         {"x": -271000, "y": 614500, "altitude": 5500, "speed": 480, "name": "SAM Suppression"}
