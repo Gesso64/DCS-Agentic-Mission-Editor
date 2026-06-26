@@ -48,6 +48,8 @@ def register_subcommand(subparsers) -> None:
                                help="'blue', 'red', or 'draw'")
     report_parser.add_argument("--blue-score", type=int, default=0)
     report_parser.add_argument("--red-score", type=int, default=0)
+    report_parser.add_argument("--from", dest="from_file", type=str, default=None,
+                               help="Read outcome from a file (.json from Lua hook, or .acmi)")
     report_parser.add_argument("--dir", type=str, default="campaigns", help="Campaigns directory")
 
     # inspect
@@ -117,14 +119,28 @@ def run(args: argparse.Namespace) -> None:
 
     elif args.campaign_action == "report":
         runner = CampaignRunner.load(campaign_dir)
-        from ..campaign.after_action import AfterAction
+        from ..campaign.after_action import AfterAction, load_outcome
 
-        outcome = AfterAction(
-            mission_name=runner.state.current_mission or "unknown",
-            winner=args.winner,
-            blue_score=args.blue_score,
-            red_score=args.red_score,
-        )
+        if args.from_file:
+            outcome = load_outcome(
+                args.from_file,
+                mission_name=runner.state.current_mission or None,
+            )
+            # CLI flags override file values when explicitly set
+            if args.winner is not None:
+                outcome = outcome.model_copy(update={"winner": args.winner})
+            if args.blue_score:
+                outcome = outcome.model_copy(update={"blue_score": args.blue_score})
+            if args.red_score:
+                outcome = outcome.model_copy(update={"red_score": args.red_score})
+            print(f"📥 Loaded outcome from: {args.from_file}")
+        else:
+            outcome = AfterAction(
+                mission_name=runner.state.current_mission or "unknown",
+                winner=args.winner,
+                blue_score=args.blue_score,
+                red_score=args.red_score,
+            )
         runner.record_outcome(outcome)
         print(f"📊 Outcome recorded for: {outcome.mission_name}")
         print(f"  Winner: {outcome.winner}")

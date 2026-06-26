@@ -117,6 +117,7 @@ state.
 | `--winner` | report | `blue`, `red`, or `draw` |
 | `--blue-score` | report | Defaults to 0 |
 | `--red-score` | report | Defaults to 0 |
+| `--from <file>` | report | Read outcome from `.json` (Lua hook) or `.acmi` (TacView). CLI flags override file values when set. See [`after_action.md`](after_action.md). |
 
 ## Output (build / design / edit)
 

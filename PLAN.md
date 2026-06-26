@@ -35,7 +35,7 @@ a first-class concept, not a stretch goal.
 | 8. Agent v1 (designer) | ✅ **DONE** | `design_mission()` with retry on validation failure; stub-LLM tests in `tests/test_agents.py` |
 | 9. Agent v2 (editor) | ✅ **DONE** | 19 tools wired through `apply_tool` dispatcher; tool_use/tool_result history threaded correctly; full offline tool-surface tests |
 | 10. Campaign | ✅ **DONE** | `CampaignRunner` load/record/branch + `design_campaign` + `render_mission` via Jinja templates; CLI `campaign init/run/report/inspect` |
-| 11. After-action | ⬜ TODO | |
+| 11. After-action | ✅ **DONE** | `LUA_HOOK_SCRIPT` + `parse_lua_callback` + `parse_tacview` + `load_outcome` autodispatch; CLI `report --from <file>` |
 | 12. CLI polish | ⬜ TODO | |
 
 ---

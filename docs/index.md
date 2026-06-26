@@ -15,12 +15,13 @@ conventions, see [`CLAUDE.md`](../CLAUDE.md).
 | [`agents.md`](agents.md) | AI agent layer — mission designer, editor (tool calls), campaign architect |
 | [`importer.md`](importer.md) | `.miz → MissionSpec` reverse-pipeline |
 | [`validation.md`](validation.md) | Phase 7 validation layer — checks, error codes, CLI integration |
+| [`after_action.md`](after_action.md) | Phase 11 after-action parsing — Lua hook, TacView .acmi, CLI |
 | [`examples.md`](examples.md) | Walkthrough of `examples/capabilities_demo.json` |
 
 ## What works today
 
-Phases 1–10 of [`PLAN.md`](../PLAN.md) are complete. Phase 11
-(after-action parsing) and Phase 12 (CLI/docs polish) remain.
+Phases 1–11 of [`PLAN.md`](../PLAN.md) are complete. Phase 12
+(CLI / docs / examples polish) remains.
 
 - **Declarative `MissionSpec`** (Pydantic) covers flights, vehicles, ships,
   statics, weather, briefing, custom Lua scripts, payloads, bullseye,
@@ -64,16 +65,20 @@ Phases 1–10 of [`PLAN.md`](../PLAN.md) are complete. Phase 11
   (coordinate sanity, fuel range, weapons match, route sanity, cross
   references). `MissionAssembler(validate=True)` and `dcs-agentic
   validate spec.json` integrate it. See [`validation.md`](validation.md).
-- **67 pytest tests** cover the assembler, schema drift, agent tool
+- **Phase 11 after-action parsing** — `parse_lua_callback` (JSON dict
+  from the embedded `LUA_HOOK_SCRIPT`), `parse_tacview` (text-mode .acmi),
+  and `load_outcome(file)` auto-dispatch by extension. CLI integration:
+  `dcs-agentic campaign report --from <file>`.
+- **76 pytest tests** cover the assembler, schema drift, agent tool
   dispatch with stub LLMs, prompt rendering, trigger build, `.miz`
-  round-trip, the Phase 4 tail, and the validation layer. All pass.
+  round-trip, the Phase 4 tail, the validation layer, and after-action
+  parsing. All pass.
 
 ## What does not work yet
 
 | Area | Status | Phase |
 |---|---|---|
 | Carrier ops: ICLS / BRC / Link-4 | Schema done; TACAN works; others surface as `CARRIER_OPS_PARTIAL` until pydcs has the API | 4 |
-| After-action parsing from DCS/TacView | `parse_lua_callback`/`parse_tacview` are `NotImplementedError` | 11 |
 | Trigger reverse-import (`.miz` → spec) | Importer warns and drops triggers; round-trip from spec→miz→spec→miz loses them | 6 (followup) |
 | Live LLM smoke tests | Agent tests use stub LLMs; no integration test hits a real model | 8/9 |
 
