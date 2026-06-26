@@ -31,7 +31,7 @@ a first-class concept, not a stretch goal.
 | 4. Builder refactor | ✅ **DONE** | All Phase-2 schema additions wired: payloads, ROE/AlarmState, FARPs, drawings (zones+markers), carrier ops (TACAN); ICLS/BRC/Link-4 surface as `CARRIER_OPS_PARTIAL` |
 | 5. Triggers | ✅ **DONE** | Builder maps TriggerKind/ActionKind to pydcs condition/action classes; group/unit/zone refs resolved by name; coalition filter routes to `MessageToCoalition` |
 | 6. Importer | ✅ **DONE** | `import_miz` round-trips theatre, coalitions (used countries only), flights+waypoints+pylons, vehicles, ships, statics; deferred sections (weather/triggers/drawings) warn but don't fail |
-| 7. Validation | ⬜ TODO | `validation/` is an empty stub |
+| 7. Validation | ✅ **DONE** | Five validators (coordinate / fuel / weapons / route / refs); `MissionAssembler(validate=True)` + `dcs-agentic validate` CLI |
 | 8. Agent v1 (designer) | ✅ **DONE** | `design_mission()` with retry on validation failure; stub-LLM tests in `tests/test_agents.py` |
 | 9. Agent v2 (editor) | ✅ **DONE** | 19 tools wired through `apply_tool` dispatcher; tool_use/tool_result history threaded correctly; full offline tool-surface tests |
 | 10. Campaign | ✅ **DONE** | `CampaignRunner` load/record/branch + `design_campaign` + `render_mission` via Jinja templates; CLI `campaign init/run/report/inspect` |

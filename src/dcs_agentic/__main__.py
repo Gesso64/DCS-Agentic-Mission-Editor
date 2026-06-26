@@ -33,9 +33,11 @@ def main():
     edit_module.register_subcommand(subparsers)
     campaign_module.register_subcommand(subparsers)
 
-    # Built-in commands (not yet split into modules)
+    # Built-in commands
     from .cli import build as build_module
+    from .cli import validate as validate_module
     build_module.register_subcommand(subparsers)
+    validate_module.register_subcommand(subparsers)
 
     args = parser.parse_args()
 

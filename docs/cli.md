@@ -13,6 +13,7 @@ dcs-agentic <subcommand> [flags]              # if installed via `pip install -e
 | Subcommand | Purpose |
 |---|---|
 | `build` | Build a `.miz` from a JSON `MissionSpec` file |
+| `validate` | Run validation checks over a JSON spec without assembling |
 | `design` | Use an LLM to create a mission from a natural-language prompt |
 | `edit` | Edit an existing mission (`.miz` or `spec.json`) via LLM tool calls |
 | `campaign` | Initialize, run, report, and inspect multi-mission campaigns |
@@ -33,6 +34,22 @@ prints the `AssemblyReport`.
 | `SPEC_FILE` | Path to a JSON mission spec (positional, required) |
 | `-o`, `--output` | Output `.miz` path (default: `output/mission.miz`) |
 | `--strict` | Exit non-zero if any error-severity issue occurred |
+
+## `validate`
+
+```
+dcs-agentic validate SPEC_FILE [--strict]
+```
+
+Runs the Phase 7 validation layer (`coordinate_sanity`, `fuel_range`,
+`weapons_match`, `route_sanity`, `references`) against the spec without
+touching pydcs. Exits 1 if any error is reported; with `--strict`,
+warnings also fail.
+
+| Flag | Description |
+|---|---|
+| `SPEC_FILE` | Path to a JSON mission spec (positional, required) |
+| `--strict` | Treat warnings as failures |
 
 ## `design`
 

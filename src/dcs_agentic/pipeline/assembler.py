@@ -43,14 +43,22 @@ class MissionAssembler:
     read `report.issues` after assembly to surface problems.
     """
 
-    def __init__(self, spec: MissionSpec, strict: bool = False):
+    def __init__(self, spec: MissionSpec, strict: bool = False, validate: bool = False):
         self.spec = spec
         self.strict = strict
+        self.validate = validate
         self.mission: Optional[Mission] = None
         self.report = AssemblyReport()
 
     def assemble(self) -> Mission:
         """Build the Mission object from the spec and return it."""
+        if self.validate:
+            from ..validation import validate as _validate
+            pre = _validate(self.spec)
+            for issue in pre.issues:
+                self.report.add(issue.severity, issue.code, issue.message,
+                                context=issue.context, hint=issue.hint)
+
         terrain_cls = catalog_theatres.resolve(self.spec.theatre)
         if terrain_cls is None:
             self.report.error(

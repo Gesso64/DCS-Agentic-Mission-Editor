@@ -14,13 +14,13 @@ conventions, see [`CLAUDE.md`](../CLAUDE.md).
 | [`catalog.md`](catalog.md) | Aliases for aircraft, vehicles, ships, countries, theatres, payloads, callsigns |
 | [`agents.md`](agents.md) | AI agent layer — mission designer, editor (tool calls), campaign architect |
 | [`importer.md`](importer.md) | `.miz → MissionSpec` reverse-pipeline |
+| [`validation.md`](validation.md) | Phase 7 validation layer — checks, error codes, CLI integration |
 | [`examples.md`](examples.md) | Walkthrough of `examples/capabilities_demo.json` |
 
 ## What works today
 
-Phases 1–6, 8, 9, 10 of [`PLAN.md`](../PLAN.md) are complete.
-Phase 7 (validation layer) is partial — coordinate / weapons / route
-checks ship; more checks pending.
+Phases 1–10 of [`PLAN.md`](../PLAN.md) are complete. Phase 11
+(after-action parsing) and Phase 12 (CLI/docs polish) remain.
 
 - **Declarative `MissionSpec`** (Pydantic) covers flights, vehicles, ships,
   statics, weather, briefing, custom Lua scripts, payloads, bullseye,
@@ -60,16 +60,18 @@ checks ship; more checks pending.
 - **Phase 8/9/10 agents** — `design_mission`, `edit_mission`, and
   `design_campaign` + `render_mission` plus a 19-tool editor surface
   (`apply_tool` dispatcher). See [`agents.md`](agents.md).
-- **54 pytest tests** cover the assembler, schema drift, agent tool
+- **Phase 7 validation layer** — `validate(spec)` runs five checks
+  (coordinate sanity, fuel range, weapons match, route sanity, cross
+  references). `MissionAssembler(validate=True)` and `dcs-agentic
+  validate spec.json` integrate it. See [`validation.md`](validation.md).
+- **67 pytest tests** cover the assembler, schema drift, agent tool
   dispatch with stub LLMs, prompt rendering, trigger build, `.miz`
-  round-trip, and the Phase 4 tail (ROE/AlarmState, FARPs, carrier
-  TACAN, drawings). All pass.
+  round-trip, the Phase 4 tail, and the validation layer. All pass.
 
 ## What does not work yet
 
 | Area | Status | Phase |
 |---|---|---|
-| Validation layer (full coverage) | `validation/` ships coordinate/weapons/route checks; more checks pending | 7 |
 | Carrier ops: ICLS / BRC / Link-4 | Schema done; TACAN works; others surface as `CARRIER_OPS_PARTIAL` until pydcs has the API | 4 |
 | After-action parsing from DCS/TacView | `parse_lua_callback`/`parse_tacview` are `NotImplementedError` | 11 |
 | Trigger reverse-import (`.miz` → spec) | Importer warns and drops triggers; round-trip from spec→miz→spec→miz loses them | 6 (followup) |
