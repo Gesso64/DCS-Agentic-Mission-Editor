@@ -1,0 +1,385 @@
+{
+  "name": "Black Sea Hammer — Multi-role Sortie",
+  "theatre": "Caucasus",
+  "sortie": "BSH-01",
+  "coalitions": [
+    {"side": "blue", "country": "USA"},
+    {"side": "red",  "country": "Russia"}
+  ],
+  "briefing": {
+    "description": "A 45-minute multi-role sortie for two F-16Cs out of Batumi. The package includes aerial refuelling over the Black Sea, a BVR/WVR intercept of a 2-ship Su-27 CAP, and a pre-planned JDAM strike on a Russian forward command post complex near the Georgian-Russian border. Tanker Texaco (KC-135) holds a racetrack at FL220 over the Black Sea. Magic AWACS (E-3A) provides picture and will call the Su-27 bandits as a pop-up threat at the 15-minute mark.",
+    "blue_task": "1. Cold-start at Batumi. Taxi and depart NW over Black Sea. 2. Rendezvous with Texaco on the AAR track at FL220, take on fuel (6 min contact). 3. Push NE after post-contact. Check in with Magic on 251.0 AM. 4. At the IP (WP5), Magic will vector you onto 2x Su-27 bandits — Iron 1-1/1-2 holding a CAP orbit. Engage BVR with AIM-9X; close if necessary. 5. After the merge, continue NE to the JDAM release point at FL220. Pre-planned targets are the Forward Command Post (BMP-2 cluster) and accompanying armour. Release GBU-38s from medium altitude; two bombs per designated aim point. 6. Egress south. Descend on descent fix and RTB Batumi. Total planned sortie: ~45 min wheels-up to touchdown.",
+    "red_task": "Iron 1-1/1-2 (Su-27) hold CAP orbit N of the command post, ready to intercept any blue aircraft pushing through the FLOT. Surface-to-air assets (SA-15 Tor, ZSU-23-4) are active at the command post perimeter. EWR provides early warning to Russian GCI."
+  },
+  "weather": {
+    "season": "Summer",
+    "qnh": 762,
+    "temperature": 24,
+    "clouds_density": 2,
+    "clouds_base": 2500,
+    "clouds_thickness": 2,
+    "wind_at_ground": {"speed": 4, "dir": 270},
+    "wind_at_height": {"speed": 12, "dir": 280}
+  },
+  "bullseye": {
+    "blue": {"x": -295000, "y": 615000},
+    "red": {"x": -295000, "y": 615000}
+  },
+  "flights": [
+    {
+      "name": "Viper 1",
+      "aircraft_type": "F-16C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "STRIKE",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Client",
+      "radio_frequency": 305.0,
+      "modulation": "AM",
+      "payload": {"preset_name": "STRIKE GBU-38"},
+      "waypoints": [
+        {
+          "x": -260000, "y": 635000,
+          "altitude": 4500, "speed": 480,
+          "name": "WP1 — Departure Fix"
+        },
+        {
+          "x": -275000, "y": 645000,
+          "altitude": 6700, "speed": 460,
+          "name": "WP2 — AAR Pre-Contact"
+        },
+        {
+          "x": -280000, "y": 650000,
+          "altitude": 6700, "speed": 350,
+          "name": "WP3 — AAR Contact"
+        },
+        {
+          "x": -265000, "y": 640000,
+          "altitude": 7500, "speed": 480,
+          "name": "WP4 — Post-Contact, Push North"
+        },
+        {
+          "x": -280000, "y": 625000,
+          "altitude": 7500, "speed": 600,
+          "name": "WP5 — IP, Combat Push"
+        },
+        {
+          "x": -295000, "y": 615000,
+          "altitude": 7000, "speed": 700,
+          "name": "WP6 — A-A Engagement Zone"
+        },
+        {
+          "x": -305000, "y": 610000,
+          "altitude": 6700, "speed": 480,
+          "name": "WP7 — JDAM Release"
+        },
+        {
+          "x": -285000, "y": 620000,
+          "altitude": 6000, "speed": 550,
+          "name": "WP8 — Egress South"
+        },
+        {
+          "x": -270000, "y": 635000,
+          "altitude": 3000, "speed": 480,
+          "name": "WP9 — Descent Fix, RTB"
+        }
+      ]
+    },
+    {
+      "name": "Texaco 1",
+      "aircraft_type": "KC-135",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 1,
+      "task": "REFUELING",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Good",
+      "altitude": 6700,
+      "speed": 350,
+      "waypoints": [
+        {
+          "x": -280000, "y": 650000,
+          "altitude": 6700, "speed": 350,
+          "name": "Tanker Track Alpha"
+        },
+        {
+          "x": -300000, "y": 645000,
+          "altitude": 6700, "speed": 350,
+          "name": "Tanker Track Bravo",
+          "type": "Turning Point"
+        },
+        {
+          "x": -280000, "y": 650000,
+          "altitude": 6700, "speed": 350,
+          "name": "Tanker Track Alpha",
+          "type": "Turning Point"
+        }
+      ]
+    },
+    {
+      "name": "Magic 1",
+      "aircraft_type": "E-3A",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 1,
+      "task": "AWACS",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "High",
+      "altitude": 9000,
+      "speed": 350,
+      "waypoints": [
+        {
+          "x": -310000, "y": 660000,
+          "altitude": 9000, "speed": 350,
+          "name": "AWACS Orbit West"
+        },
+        {
+          "x": -330000, "y": 655000,
+          "altitude": 9000, "speed": 350,
+          "name": "AWACS Orbit East",
+          "type": "Turning Point"
+        },
+        {
+          "x": -310000, "y": 660000,
+          "altitude": 9000, "speed": 350,
+          "name": "AWACS Orbit West",
+          "type": "Turning Point"
+        }
+      ]
+    },
+    {
+      "name": "Iron 1",
+      "aircraft_type": "Su-27",
+      "country": "Russia",
+      "side": "red",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "cold",
+      "airport": "Sochi-Adler",
+      "skill": "High",
+      "altitude": 6000,
+      "speed": 480,
+      "payload": {"preset_name": "CAP A-A"},
+      "waypoints": [
+        {
+          "x": -300000, "y": 610000,
+          "altitude": 6000, "speed": 480,
+          "name": "CAP South"
+        },
+        {
+          "x": -310000, "y": 615000,
+          "altitude": 6000, "speed": 480,
+          "name": "CAP North",
+          "type": "Turning Point"
+        },
+        {
+          "x": -300000, "y": 610000,
+          "altitude": 6000, "speed": 480,
+          "name": "CAP South",
+          "type": "Turning Point"
+        }
+      ]
+    }
+  ],
+  "vehicles": [
+    {
+      "name": "Command Post Alpha",
+      "vehicle_type": "BMP-2",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -308000, "y": 608000},
+      "group_size": 3,
+      "heading": 135,
+      "skill": "High",
+      "roe": "ReturnFire",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Recon Screen",
+      "vehicle_type": "BRDM-2",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -307000, "y": 609500},
+      "group_size": 2,
+      "heading": 180,
+      "skill": "Good",
+      "roe": "ReturnFire",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Tor-M1 SHORAD",
+      "vehicle_type": "SA-15",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -306500, "y": 607500},
+      "group_size": 1,
+      "heading": 90,
+      "skill": "High",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "ZSU AAA Screen",
+      "vehicle_type": "ZSU-23-4",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -308500, "y": 607000},
+      "group_size": 2,
+      "heading": 315,
+      "skill": "Good",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "EWR North",
+      "vehicle_type": "1L13-EWR",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -290000, "y": 618000},
+      "group_size": 1,
+      "heading": 0,
+      "skill": "High",
+      "roe": "WeaponHold",
+      "alarm_state": "Auto"
+    }
+  ],
+  "zones": [
+    {
+      "name": "Target Area — CP Alpha",
+      "center": {"x": -308000, "y": 608000},
+      "radius": 2500.0,
+      "color": "rgba(255,0,0,0.35)"
+    },
+    {
+      "name": "AAR Track",
+      "center": {"x": -290000, "y": 647500},
+      "radius": 15000.0,
+      "color": "rgba(0,100,255,0.20)"
+    },
+    {
+      "name": "A-A Engagement Zone",
+      "center": {"x": -295000, "y": 615000},
+      "radius": 20000.0,
+      "color": "rgba(255,165,0,0.20)"
+    }
+  ],
+  "markers": [
+    {
+      "name": "TANKER — Texaco FL220",
+      "position": {"x": -290000, "y": 647500},
+      "text": "Texaco 1 / KC-135 / 350 KTAS / FL220",
+      "coalition": "blue"
+    },
+    {
+      "name": "AWACS — Magic FL300",
+      "position": {"x": -320000, "y": 657500},
+      "text": "Magic 1 / E-3A / 251.0 AM / FL300",
+      "coalition": "blue"
+    },
+    {
+      "name": "TGT — CP Alpha",
+      "position": {"x": -308000, "y": 608000},
+      "text": "CP Alpha: BMP-2 cluster, Tor-M1 SHORAD, ZSU screen. 4x GBU-38.",
+      "coalition": "blue"
+    },
+    {
+      "name": "BULLSEYE",
+      "position": {"x": -295000, "y": 615000},
+      "text": "BULLSEYE reference point",
+      "coalition": "blue"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "Radio Comms Brief",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 5}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "VIPERS: Contact Magic on 251.0 AM once airborne. Texaco holding AAR track at FL220, TACAN 22X. GBU-38 release parameters: 15,000ft+, straight-and-level, pickle both stores on each aim point.",
+          "duration_seconds": 20
+        }
+      ]
+    },
+    {
+      "name": "Magic On Station",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 300}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "MAGIC: Vipers, Magic is on station at FL300. Picture clean at this time. Texaco is established on the AAR track. Push when ready.",
+          "duration_seconds": 15
+        }
+      ]
+    },
+    {
+      "name": "Bandit Pop-up Call",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 900}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "MAGIC: Vipers, Magic. Pop-up threat! BRAA 030 / 25 nm / FL200 / hot. 2x Flankers, commit. Declare and engage.",
+          "duration_seconds": 15
+        }
+      ]
+    },
+    {
+      "name": "Strike Timing Call",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 1800}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "MAGIC: Vipers, picture clear post-merge. Continue to target. CP Alpha is 15 nm your nose. SA-15 site is active — roll-in above 15,000ft.",
+          "duration_seconds": 15
+        }
+      ]
+    }
+  ],
+  "mission_goals": [
+    {
+      "description": "Complete aerial refuelling with Texaco (KC-135) on the AAR track",
+      "coalition": "blue",
+      "category": "refueling",
+      "score_target": 20
+    },
+    {
+      "description": "Intercept and destroy Iron 1 (Su-27 CAP flight)",
+      "coalition": "blue",
+      "category": "intercept",
+      "score_target": 40
+    },
+    {
+      "description": "Destroy Command Post Alpha (BMP-2 cluster and recon screen)",
+      "coalition": "blue",
+      "category": "destroy",
+      "score_target": 60
+    },
+    {
+      "description": "RTB safely to Batumi",
+      "coalition": "blue",
+      "category": "rtb",
+      "score_target": 20
+    }
+  ],
+  "agent_notes": "Black Sea Hammer is a full-spectrum multi-role sortie designed to flow naturally over ~45 minutes. Phase sequence: cold-start Batumi (6 min), climb and transit NW over the Black Sea (5 min), AAR with Texaco at FL220 (6 min on the boom), push NE with Magic picture (5 min), BVR/WVR intercept of 2x Su-27 CAP (5 min), JDAM strike on the command post from FL220 medium altitude (5 min), and egress/RTB (13 min). Threat environment is medium: the Su-27s are the primary A-A threat (R-27R BVR + R-73 WVR); the SA-15 and ZSU-23-4 at the target mandate medium-altitude release. The GBU-38 STRIKE preset (4x JDAM, 2x AIM-9X) covers both the A-A fight (Sidewinder self-defence) and the ground strike. Viper slots are set to Client skill for player use. Red CAP spawns airborne on a racetrak orbit for immediate readiness."
+}

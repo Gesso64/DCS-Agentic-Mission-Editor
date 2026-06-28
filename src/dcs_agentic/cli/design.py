@@ -7,7 +7,6 @@ Usage:
 import argparse
 import sys
 
-from ..agents.mission_agent import design_mission
 from ..pipeline import MissionAssembler
 
 
@@ -44,6 +43,8 @@ def register_subcommand(subparsers) -> None:
 
 def run(args: argparse.Namespace) -> None:
     """Execute the design command."""
+    from ..agents.mission_agent import design_mission
+
     print(f"\n🧠 Designing mission from prompt...")
     print(f"  Prompt: {args.prompt}")
     print(f"  Theatre: {args.theatre}")

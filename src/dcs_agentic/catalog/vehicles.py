@@ -234,6 +234,32 @@ _ARMOR_ALIASES: Dict[str, Tuple[str, ...]] = {
     "Ural-375":        ("support", "aaa", "truck"),
 }
 
+_INFANTRY_ATTR_MAP: Dict[str, str] = {
+    "Infantry-AK": "Infantry_AK",
+    "Infantry-AK-Ins": "Infantry_AK_Ins",
+    "Infantry-AK-2": "Infantry_AK_ver2",
+    "Infantry-AK-3": "Infantry_AK_ver3",
+    "Soldier-AK": "Soldier_AK",
+    "Soldier-RPG": "Soldier_RPG",
+    "Soldier-M4": "Soldier_M4",
+    "Soldier-M249": "Soldier_M249",
+    "Paratrooper-AKS": "Paratrooper_AKS_74",
+    "Paratrooper-RPG": "Paratrooper_RPG_16",
+}
+
+_INFANTRY_ALIASES: Dict[str, Tuple[str, ...]] = {
+    "Infantry-AK":    ("infantry", "rifle", "russia"),
+    "Infantry-AK-Ins": ("infantry", "rifle", "insurgent"),
+    "Infantry-AK-2":  ("infantry", "rifle", "russia"),
+    "Infantry-AK-3":  ("infantry", "rifle", "russia"),
+    "Soldier-AK":     ("infantry", "rifle", "russia"),
+    "Soldier-RPG":    ("infantry", "at", "russia"),
+    "Soldier-M4":     ("infantry", "rifle", "usa"),
+    "Soldier-M249":   ("infantry", "mg", "usa"),
+    "Paratrooper-AKS": ("infantry", "rifle", "airborne", "russia"),
+    "Paratrooper-RPG": ("infantry", "at", "airborne", "russia"),
+}
+
 
 # ─── Lazy-built maps ───────────────────────────────────────────────────────
 
@@ -261,6 +287,10 @@ def _build():
         _MAP["HMMWV"] = arm.M1043_HMMWV_Armament
     if hasattr(ad, "Ural_375_ZU_23"):
         _MAP["Ural-375"] = ad.Ural_375_ZU_23
+    inf = _vehicles.Infantry
+    for alias, attr in _INFANTRY_ATTR_MAP.items():
+        if hasattr(inf, attr):
+            _MAP[alias] = getattr(inf, attr)
     _build_info()
 
 
@@ -298,6 +328,13 @@ def _build_info():
             alias="Ural-375",
             pydcs_attr="Ural_375_ZU_23",
             role=("support", "aaa", "truck"),
+        )
+    for alias in _INFANTRY_ATTR_MAP:
+        roles = _INFANTRY_ALIASES.get(alias, ("infantry",))
+        _INFO[alias] = VehicleInfo(
+            alias=alias,
+            pydcs_attr=_INFANTRY_ATTR_MAP[alias],
+            role=roles,
         )
 
 

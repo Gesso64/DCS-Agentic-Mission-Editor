@@ -1,0 +1,340 @@
+{
+  "name": "CAS SA-6 Gauntlet",
+  "theatre": "Caucasus",
+  "sortie": "CAS-01",
+  "coalitions": [
+    {"side": "blue", "country": "USA"},
+    {"side": "red",  "country": "Russia"}
+  ],
+  "briefing": {
+    "description": "Blue armor is pushing north across the FLOT toward the Inguri River. A Russian mechanized company (T-72Bs, BMP-2s, BRDM-2s) is dug in with infantry support. An SA-6 Kub site sits 2 km behind their line providing medium-range air cover. Red air has a 2-ship MiG-21 CAP orbiting between the target area and Sochi-Adler.\n\nYour flight (Viper 1, 2x F-16C out of Batumi) provides Close Air Support. Threat environment: SA-6 Kub (medium-range, ~25 km), possible MANPADS near the infantry, and a MiG-21 CAP. The SA-6 is the most dangerous SAM but is forgiving relative to SA-10/SA-11 systems — stay low in the terrain or above 5000 m AGL to minimize exposure.\n\nDynamic slots: you choose your own loadout at rearming. Recommend LGBs for the T-72Bs, guns for BRDM-2s and trucks, and cluster or iron bombs for infantry concentrations.",
+    "blue_task": "1. Cold-start at Batumi; taxi and depart to the NW over the Black Sea.\n2. Push inland at the IP; check in on 305.0 AM.\n3. Orbit the target area at WP3. Locate and engage the SA-6 site first to sanitize the battlespace.\n4. Provide CAS to the blue armor push: destroy red T-72Bs, BMP-2s, BRDM-2 scouts, truck convoy, and infantry positions.\n5. Be alert for MiG-21 CAP out of Sochi — Magic will call bandits.\n6. Egress south after Bingo fuel or winchester; RTB Batumi.",
+    "red_task": "Defend the FLOT. SA-6 Kub provides air umbrella. MiG-21 CAP intercepts any blue aircraft pushing north of Batumi. Armored company holds the line against blue armor advance."
+  },
+  "weather": {
+    "season": "Summer",
+    "qnh": 760,
+    "temperature": 22,
+    "clouds_density": 3,
+    "clouds_base": 2000,
+    "clouds_thickness": 2,
+    "wind_at_ground": {"speed": 5, "dir": 270},
+    "wind_at_height": {"speed": 12, "dir": 280}
+  },
+  "flights": [
+    {
+      "name": "Viper 1",
+      "aircraft_type": "F-16C",
+      "country": "USA",
+      "side": "blue",
+      "group_size": 2,
+      "task": "CAS",
+      "start_type": "cold",
+      "airport": "Batumi",
+      "skill": "Client",
+      "radio_frequency": 305.0,
+      "modulation": "AM",
+      "waypoints": [
+        {"x": -345000, "y": 625000, "altitude": 3000, "speed": 550, "name": "WP1 — Departure"},
+        {"x": -330000, "y": 618000, "altitude": 4000, "speed": 600, "name": "WP2 — Push Inland IP"},
+        {"x": -310000, "y": 612000, "altitude": 5000, "speed": 480, "name": "WP3 — Target Hold", "type": "Turning Point"},
+        {"x": -340000, "y": 620000, "altitude": 3000, "speed": 550, "name": "WP4 — Egress"},
+        {"x": -348000, "y": 625000, "altitude": 1500, "speed": 480, "name": "WP5 — Descent Fix"}
+      ]
+    },
+    {
+      "name": "Bandit 1",
+      "aircraft_type": "MiG-21Bis",
+      "country": "Russia",
+      "side": "red",
+      "group_size": 2,
+      "task": "CAP",
+      "start_type": "runway",
+      "airport": "Sochi-Adler",
+      "skill": "High",
+      "altitude": 5000,
+      "speed": 550,
+      "waypoints": [
+        {"x": -200000, "y": 585000, "altitude": 5000, "speed": 550, "name": "CAP Push South"},
+        {"x": -280000, "y": 600000, "altitude": 5000, "speed": 480, "name": "CAP Station South"},
+        {"x": -310000, "y": 608000, "altitude": 5000, "speed": 480, "name": "CAP Station North", "type": "Turning Point"},
+        {"x": -280000, "y": 600000, "altitude": 5000, "speed": 480, "name": "CAP Station South", "type": "Turning Point"}
+      ]
+    }
+  ],
+  "vehicles": [
+    {
+      "name": "SA-6 SR",
+      "vehicle_type": "SA-6-SR",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -305000, "y": 608000},
+      "group_size": 1,
+      "heading": 180,
+      "skill": "High",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "SA-6 LN A",
+      "vehicle_type": "SA-6-LN",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -304000, "y": 607500},
+      "group_size": 1,
+      "heading": 180,
+      "skill": "High",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "SA-6 LN B",
+      "vehicle_type": "SA-6-LN",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -306000, "y": 607500},
+      "group_size": 1,
+      "heading": 180,
+      "skill": "High",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Red Armor Alpha",
+      "vehicle_type": "T-72B",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -310000, "y": 610000},
+      "group_size": 3,
+      "heading": 180,
+      "skill": "High",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Red Armor Bravo",
+      "vehicle_type": "T-72B",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -308500, "y": 609500},
+      "group_size": 2,
+      "heading": 210,
+      "skill": "Good",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Red IFVs",
+      "vehicle_type": "BMP-2",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -311000, "y": 610500},
+      "group_size": 3,
+      "heading": 180,
+      "skill": "Good",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Red Scouts",
+      "vehicle_type": "BRDM-2",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -309000, "y": 611500},
+      "group_size": 3,
+      "heading": 180,
+      "skill": "Good",
+      "roe": "ReturnFire",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Red Supply Trucks",
+      "vehicle_type": "Ural-375",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -307500, "y": 609000},
+      "group_size": 2,
+      "heading": 90,
+      "skill": "Average",
+      "roe": "WeaponHold",
+      "alarm_state": "Auto"
+    },
+    {
+      "name": "Red Infantry Squad",
+      "vehicle_type": "Infantry-AK",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -310500, "y": 611000},
+      "group_size": 12,
+      "heading": 180,
+      "skill": "Good",
+      "roe": "ReturnFire",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Red RPG Team",
+      "vehicle_type": "Soldier-RPG",
+      "country": "Russia",
+      "side": "red",
+      "position": {"x": -309500, "y": 610800},
+      "group_size": 4,
+      "heading": 180,
+      "skill": "Good",
+      "roe": "ReturnFire",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Blue Armor Lead",
+      "vehicle_type": "M1-Abrams",
+      "country": "USA",
+      "side": "blue",
+      "position": {"x": -317000, "y": 612500},
+      "group_size": 3,
+      "heading": 0,
+      "skill": "High",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    },
+    {
+      "name": "Blue IFVs",
+      "vehicle_type": "M2-Bradley",
+      "country": "USA",
+      "side": "blue",
+      "position": {"x": -316000, "y": 611500},
+      "group_size": 2,
+      "heading": 0,
+      "skill": "Good",
+      "roe": "WeaponFree",
+      "alarm_state": "Red"
+    }
+  ],
+  "zones": [
+    {
+      "name": "TGT — Armor Column",
+      "center": {"x": -310000, "y": 610500},
+      "radius": 2500.0,
+      "color": "rgba(255,0,0,0.35)"
+    },
+    {
+      "name": "TGT — SA-6 Site",
+      "center": {"x": -305000, "y": 607800},
+      "radius": 3000.0,
+      "color": "rgba(255,140,0,0.35)"
+    },
+    {
+      "name": "CAP Station",
+      "center": {"x": -295000, "y": 604000},
+      "radius": 20000.0,
+      "color": "rgba(255,0,0,0.15)"
+    }
+  ],
+  "markers": [
+    {
+      "name": "SA-6 THREAT",
+      "position": {"x": -305000, "y": 608000},
+      "text": "SA-6 Kub (Straight Flush) — 25 km range, medium-altitude SAM. Suppress before target runs.",
+      "coalition": "blue"
+    },
+    {
+      "name": "GROUND BATTLE",
+      "position": {"x": -310000, "y": 610500},
+      "text": "FLOT: Blue armor (north) vs Red mechanized company (south). T-72Bs, BMP-2s, BRDM-2s, infantry — CAS requested.",
+      "coalition": "blue"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "Mission Brief",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 5}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "VIPERS: Blue armor is pushing north at the FLOT. Red mechanized company with SA-6 Kub cover. Sanitize the SAM first, then work the armor column. T-72Bs for your LGBs, BRDMs and trucks for guns, infantry at the tree line. Bandit 1 (MiG-21 CAP) is airborne out of Sochi — Magic will call. Check in on 305.0 AM.",
+          "duration_seconds": 20
+        }
+      ]
+    },
+    {
+      "name": "SA-6 Spike Warning",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 300}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "MAGIC: Vipers, picture is building. SA-6 Straight Flush is radiating from the FLOT — stay low in the terrain or above angels 16. Recommend you sanitize the SAM before pushing on the armor.",
+          "duration_seconds": 15
+        }
+      ]
+    },
+    {
+      "name": "Red Air Warning",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 600}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "MAGIC: Vipers, Magic. Bandit 1 is a 2-ship MiG-21 at angels 16, BRAA 060 / 35 nm. They are holding CAP south of the target. Be advised — they will press if you stray north of the IP.",
+          "duration_seconds": 15
+        }
+      ]
+    },
+    {
+      "name": "RTB Reminder",
+      "once": true,
+      "coalition": "blue",
+      "conditions": [
+        {"kind": "time_reached", "time_seconds": 2400}
+      ],
+      "actions": [
+        {
+          "kind": "show_message",
+          "message": "MAGIC: Vipers, you are 40 minutes in. Check fuel state and weapons remaining. Egress to WP4 when winchester. RTB Batumi. Good hunting.",
+          "duration_seconds": 15
+        }
+      ]
+    }
+  ],
+  "mission_goals": [
+    {
+      "description": "Destroy the SA-6 Kub site (Straight Flush radar + 2x launchers)",
+      "coalition": "blue",
+      "category": "destroy",
+      "score_target": 50
+    },
+    {
+      "description": "Destroy red armor column (T-72Bs)",
+      "coalition": "blue",
+      "category": "destroy",
+      "score_target": 40
+    },
+    {
+      "description": "Destroy red IFVs and scouts (BMP-2s, BRDM-2s)",
+      "coalition": "blue",
+      "category": "destroy",
+      "score_target": 30
+    },
+    {
+      "description": "Destroy red CAP flight (MiG-21Bis)",
+      "coalition": "blue",
+      "category": "intercept",
+      "score_target": 30
+    },
+    {
+      "description": "RTB safely to Batumi",
+      "coalition": "blue",
+      "category": "rtb",
+      "score_target": 20
+    }
+  ],
+  "agent_notes": "CAS SA-6 Gauntlet is a cooperative 2-player CAS mission for F-16C novices learning air-to-ground. Dynamic slots: both players are Client skill with no preset payload so they configure their own loadouts via DCS rearming. Target layering: SA-6 Kub site (Straight Flush + 2x TELs, 25 km threat — forgiving SAM) for the first priority, then T-72Bs (LGB targets), BMP-2s (mixed gun/LGB), BRDM-2s (gun targets), Ural-375 trucks (soft / gun runs), and infantry squads (area / carpet bombing). Red air is 2x MiG-21Bis CAP out of Sochi-Adler — a beatable opponent for AIM-9X self-defense. Blue M1-Abrams and M2-Bradleys push north to create the ground battle narrative. Four timed triggers provide situation awareness throughout the sortie. Estimated sortie duration: ~45 minutes."
+}

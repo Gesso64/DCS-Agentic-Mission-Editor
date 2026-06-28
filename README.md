@@ -28,6 +28,22 @@ pip install -e .[dev,agents]
 Set `ANTHROPIC_API_KEY` (and optionally `ANTHROPIC_BASE_URL` for a
 LiteLLM/OpenRouter proxy) before invoking `design` / `edit` / `campaign`.
 
+## GUI (chat)
+
+Prefer to just talk to the AI? Launch the desktop chat GUI:
+
+```
+run-gui.bat              # Windows — double-click, or:
+python start-mission-gui.py
+```
+
+Type what you want ("2-ship F-16 CAP over Batumi at dawn"); it designs the
+mission, assembles the `.miz`, and saves it to your output folder. Follow-up
+messages edit that same mission ("add a tanker", "move the CAP north"). Set
+your `ANTHROPIC_API_KEY` (and optional proxy base URL), theatre, output
+folder, and model override in **Settings** (Ctrl+,). Requires `PySide6`
+(`pip install PySide6`) and the `agents` extra.
+
 ## Quickstart
 
 Build a mission from a JSON spec:

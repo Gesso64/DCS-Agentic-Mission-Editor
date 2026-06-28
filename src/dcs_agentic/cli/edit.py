@@ -9,7 +9,6 @@ import json
 import sys
 from pathlib import Path
 
-from ..agents.editor_agent import edit_mission
 from ..pipeline import MissionAssembler
 from ..schemas import MissionSpec
 
@@ -80,6 +79,7 @@ def run(args: argparse.Namespace) -> None:
     print(f"  Instruction: {args.instruction}")
     print()
 
+    from ..agents.editor_agent import edit_mission
     edited_spec = edit_mission(
         spec=spec,
         instruction=args.instruction,

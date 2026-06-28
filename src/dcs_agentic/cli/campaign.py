@@ -12,7 +12,6 @@ import json
 import sys
 from pathlib import Path
 
-from ..agents.campaign_agent import design_campaign, render_mission
 from ..campaign.runner import CampaignRunner
 from ..schemas import CampaignSpec, CampaignState
 
@@ -66,6 +65,7 @@ def run(args: argparse.Namespace) -> None:
     campaign_dir.mkdir(parents=True, exist_ok=True)
 
     if args.campaign_action == "init":
+        from ..agents.campaign_agent import design_campaign
         print(f"\n🧠 Designing campaign from prompt...")
         print(f"  Name: {args.name}")
         print(f"  Prompt: {args.prompt}")
@@ -96,6 +96,7 @@ def run(args: argparse.Namespace) -> None:
         print(f"  State: {state_path}")
 
     elif args.campaign_action == "run":
+        from ..agents.campaign_agent import render_mission
         runner = CampaignRunner.load(campaign_dir)
         print(f"\n🎯 Running campaign: {runner.campaign.name}")
         print(f"  Current mission: {runner.state.current_mission}")
