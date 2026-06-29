@@ -71,7 +71,7 @@ _HOST_META: dict[str, dict] = {
     "cursor": {
         "path": lambda: Path.home() / ".cursor" / "mcp.json",
         "config_key": "mcpServers",
-        "next": "Cursor picks up changes automatically. Check Settings → MCP.",
+        "next": "Cursor picks up changes automatically. Check Settings > MCP.",
     },
     "cursor-project": {
         "path": lambda: Path(".cursor") / "mcp.json",
@@ -81,13 +81,13 @@ _HOST_META: dict[str, dict] = {
     "windsurf": {
         "path": _windsurf_path,
         "config_key": "mcpServers",
-        "next": "Windsurf picks up MCP changes automatically (Settings → Cascade → MCP).",
+        "next": "Windsurf picks up MCP changes automatically (Settings > Cascade > MCP).",
     },
     "zed": {
         # Zed uses "context_servers" (not "mcpServers") — unique among major hosts.
         "path": lambda: Path.home() / ".config" / "zed" / "settings.json",
         "config_key": "context_servers",
-        "next": "Zed auto-restarts the server on settings.json save — no restart needed.",
+        "next": "Zed auto-restarts the server on settings.json save - no restart needed.",
     },
 }
 
@@ -143,9 +143,44 @@ def _merge(config: dict, entry: dict, config_key: str) -> tuple[dict, bool]:
     return config, True
 
 
+# ─── Interactive host picker ──────────────────────────────────────────────────
+
+_HOST_LABELS = [
+    ("claude-desktop",          "Claude Desktop"),
+    ("claude-code",             "Claude Code (global)"),
+    ("claude-code-project",     "Claude Code (this project only)"),
+    ("cursor",                  "Cursor (global)"),
+    ("cursor-project",          "Cursor (this project only)"),
+    ("windsurf",                "Windsurf"),
+    ("zed",                     "Zed"),
+]
+
+
+def _pick_host() -> str:
+    """Interactively ask the user which host to configure."""
+    print("Which AI host would you like to register with?\n")
+    for i, (flag, label) in enumerate(_HOST_LABELS, 1):
+        print(f"  {i}) {label}")
+    print()
+    while True:
+        raw = input("  Choice [1]: ").strip()
+        if raw == "":
+            return _HOST_LABELS[0][0]
+        try:
+            idx = int(raw) - 1
+            if 0 <= idx < len(_HOST_LABELS):
+                return _HOST_LABELS[idx][0]
+        except ValueError:
+            pass
+        print(f"  Enter a number 1-{len(_HOST_LABELS)}")
+
+
 # ─── Core ─────────────────────────────────────────────────────────────────────
 
-def _run_setup(host: str, dry_run: bool) -> int:
+def _run_setup(host: str | None, dry_run: bool) -> int:
+    if host is None:
+        host = _pick_host()
+        print()
     meta = _HOST_META[host]
     config_path: Path = meta["path"]()
     config_key: str = meta["config_key"]
@@ -162,20 +197,20 @@ def _run_setup(host: str, dry_run: bool) -> int:
     updated, changed = _merge(config, entry, config_key)
 
     if not changed:
-        print("Already registered — no changes needed.")
+        print("Already registered - no changes needed.")
         return 0
 
     if dry_run:
-        print("Dry run — would write:")
+        print("Dry run - would write:")
         print(json.dumps({config_key: {"dcs-agentic": entry}}, indent=2))
         return 0
 
     backup = _backup(config_path)
     if backup:
-        print(f"Backed up existing config → {backup}")
+        print(f"Backed up existing config -> {backup}")
 
     _write_config(config_path, updated)
-    print(f"Written → {config_path}")
+    print(f"Written -> {config_path}")
     print()
     print("Next step:", meta["next"])
     return 0
@@ -191,10 +226,10 @@ def register_subcommand(subparsers: argparse._SubParsersAction) -> None:
     p.add_argument(
         "--host",
         choices=list(_HOST_META),
-        default="claude-desktop",
+        default=None,
         metavar="HOST",
         help=(
-            "Host to configure (default: claude-desktop). "
+            "Host to configure. "
             "Choices: " + ", ".join(_HOST_META)
         ),
     )

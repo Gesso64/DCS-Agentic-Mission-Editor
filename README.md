@@ -22,23 +22,31 @@ Tell your AI what you want — _"2-ship F-16 CAP over Batumi at dawn with a SA-1
 
 Connect the tool to your AI host and drive it with any model you already use.
 
-**1. Install**
+**1–2. Install & register (one command)**
+
+```
+python install.py              # interactive menu - pick what to install and which host
+python install.py --mcp        # MCP server - prompts for your AI host
+python install.py --all        # everything: mcp + agents + gui + dev tools
+```
+
+Windows users: double-click **`setup.bat`** to run the interactive menu.
+
+The installer detects what's already set up and skips it. It will ask
+which AI host to register with (Claude Desktop, Claude Code, Cursor,
+Windsurf, Zed, and more).
+
+Alternatively, install and register manually:
 ```
 pip install -e .[mcp]
+python -m dcs_agentic setup --host claude-code          # Claude Code
+python -m dcs_agentic setup --host claude-desktop       # Claude Desktop
+python -m dcs_agentic setup --host cursor               # Cursor
+python -m dcs_agentic setup --host windsurf             # Windsurf
+python -m dcs_agentic setup --host zed                  # Zed
 ```
 
-**2. Register with your AI host**
-```
-python -m dcs_agentic setup                            # Claude Desktop (default)
-python -m dcs_agentic setup --host claude-code         # Claude Code
-python -m dcs_agentic setup --host cursor              # Cursor
-python -m dcs_agentic setup --host windsurf            # Windsurf
-python -m dcs_agentic setup --host zed                 # Zed
-python -m dcs_agentic setup --host claude-code-project # scoped to this project
-python -m dcs_agentic setup --host cursor-project      # scoped to this project
-```
-
-Windows users: double-click **`setup-mcp.bat`** to do steps 1 and 2 together.
+Omitting `--host` shows an interactive host picker.
 
 Then restart your host (or run `claude mcp list` for Claude Code) to verify.
 
@@ -56,10 +64,14 @@ The AI calls `new_mission` → `add_flight` → `add_vehicle_group` → `build_m
 
 For DCS players who prefer a desktop chat window over an AI host.
 
-**Requirements:** `pip install -e .[agents,gui]` and an Anthropic API key.
+**Requirements:** an Anthropic API key. Install via the setup script or manually:
 
 ```
-run-gui.bat              # Windows — double-click
+python install.py              # select "Chat GUI" when prompted
+```
+or:
+```
+pip install -e .[agents,gui]
 python start-mission-gui.py
 ```
 
@@ -97,13 +109,13 @@ Caucasus · Syria · Persian Gulf · Nevada · Normandy · The Channel · Marian
 
 | Host | Setup command |
 |------|--------------|
-| Claude Desktop | `python -m dcs_agentic setup` |
+| Claude Desktop | `python -m dcs_agentic setup --host claude-desktop` |
 | Claude Code | `python -m dcs_agentic setup --host claude-code` |
 | Cursor | `python -m dcs_agentic setup --host cursor` |
 | Windsurf | `python -m dcs_agentic setup --host windsurf` |
 | Zed | `python -m dcs_agentic setup --host zed` |
-| Cline (VS Code) | Manual — see [docs/mcp.md](docs/mcp.md) |
-| Continue | Manual — see [docs/mcp.md](docs/mcp.md) |
+| Cline (VS Code) | Manual - see [docs/mcp.md](docs/mcp.md) |
+| Continue | Manual - see [docs/mcp.md](docs/mcp.md) |
 
 ---
 

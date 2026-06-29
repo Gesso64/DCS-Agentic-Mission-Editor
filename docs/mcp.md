@@ -8,29 +8,38 @@ it lives in whatever host you connect.
 
 ## Setup
 
-### 1. Install
+### Quick install
+
+```
+python install.py              # interactive menu - pick what to install and which host
+python install.py --mcp        # MCP server - prompts for your AI host
+python install.py --all        # everything: mcp + agents + gui + dev tools
+```
+
+Windows users: double-click **`setup.bat`**.
+
+The installer detects what's already set up and skips it. It will ask
+which AI host to register with (Claude Desktop, Claude Code, Cursor,
+Windsurf, Zed, and more).
+
+### Manual install
 
 ```
 pip install -e .[mcp]
-```
-
-### 2. Register with your host
-
-```
-python -m dcs_agentic setup                             # Claude Desktop (default)
-python -m dcs_agentic setup --host claude-code          # Claude Code — global
-python -m dcs_agentic setup --host claude-code-project  # Claude Code — this project
-python -m dcs_agentic setup --host cursor               # Cursor — global
-python -m dcs_agentic setup --host cursor-project       # Cursor — this project
+python -m dcs_agentic setup --host claude-code          # Claude Code (global)
+python -m dcs_agentic setup --host claude-code-project  # Claude Code (this project)
+python -m dcs_agentic setup --host claude-desktop       # Claude Desktop
+python -m dcs_agentic setup --host cursor               # Cursor (global)
+python -m dcs_agentic setup --host cursor-project       # Cursor (this project)
 python -m dcs_agentic setup --host windsurf             # Windsurf
 python -m dcs_agentic setup --host zed                  # Zed
 python -m dcs_agentic setup --dry-run                   # preview without writing
 ```
 
-Windows users: double-click **`setup-mcp.bat`** to do both steps together.
+Omitting `--host` shows an interactive host picker.
 
-The setup command writes into your host's config file. It merges safely —
-other MCP servers you have registered are not touched — and backs up the
+The setup command writes into your host's config file. It merges safely -
+other MCP servers you have registered are not touched - and backs up the
 file before any change.
 
 ### 3. Restart your host

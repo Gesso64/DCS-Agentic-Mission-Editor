@@ -124,12 +124,14 @@ dcs-agentic setup [--host HOST] [--dry-run]
 ```
 
 Registers the MCP server with your AI host by writing into its config file.
-Backs up the existing config before writing. Safe to run multiple times —
+Backs up the existing config before writing. Safe to run multiple times -
 it only updates the `dcs-agentic` entry, leaving other servers untouched.
+
+If `--host` is omitted, an interactive menu is shown.
 
 | Flag | Description |
 |---|---|
-| `--host` | Target host (see table below). Default: `claude-desktop` |
+| `--host` | Target host (see table below). If omitted, an interactive picker is shown |
 | `--dry-run` | Show what would be written without modifying any files |
 
 | `--host` value | Config file written |
