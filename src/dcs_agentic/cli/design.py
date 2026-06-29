@@ -45,7 +45,11 @@ def run(args: argparse.Namespace) -> None:
     """Execute the design command."""
     from ..agents.mission_agent import design_mission
 
-    print(f"\n🧠 Designing mission from prompt...")
+    if not args.prompt.strip():
+        print("Error: --prompt cannot be empty", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"\nDesigning mission from prompt...")
     print(f"  Prompt: {args.prompt}")
     print(f"  Theatre: {args.theatre}")
     print()

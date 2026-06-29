@@ -7,8 +7,8 @@ mission to build a `MissionSpec`. Round-trip is intentionally lossy in v1:
     - theatre, start_time, briefing texts
     - coalitions (one Coalition entry per country present)
     - flights (with waypoints, skill, livery, radio, payload pylons)
-    - vehicles (position, heading, skill, group_size)
-    - ships (position, group_size)
+    - vehicles (position, heading, skill, group_size, waypoints)
+    - ships (position, group_size, waypoints)
     - static objects (position, heading, type id)
 
   Deferred (warned about):
@@ -327,8 +327,28 @@ def _payload_from_unit(unit) -> Optional[PayloadSpec]:
         clsid = slot.get("CLSID") if isinstance(slot, dict) else None
         if not clsid:
             continue
-        pylons.append(Pylon(station=int(station), clsid=clsid, quantity=1))
+        qty = slot.get("count", 1) if isinstance(slot, dict) else 1
+        pylons.append(Pylon(station=int(station), clsid=clsid, quantity=int(qty)))
     return PayloadSpec(pylons=pylons or None) if pylons else None
+
+
+def _ground_waypoints_from_points(points) -> Optional[List[Waypoint]]:
+    """Import waypoints from a ground/ship group's points list.
+
+    Skips index 0 (spawn position, already captured as .position).
+    """
+    wps: List[Waypoint] = []
+    for idx, p in enumerate(points):
+        if idx == 0:
+            continue
+        wps.append(Waypoint(
+            x=float(p.position.x),
+            y=float(p.position.y),
+            altitude=int(p.alt) if getattr(p, "alt", None) is not None else None,
+            speed=ms_to_kmh(p.speed) if getattr(p, "speed", None) else None,
+            name=getattr(p, "name", None) or None,
+        ))
+    return wps or None
 
 
 def _vehicles(mission: Mission, report: AssemblyReport) -> Optional[List[VehicleGroup]]:
@@ -338,6 +358,7 @@ def _vehicles(mission: Mission, report: AssemblyReport) -> Optional[List[Vehicle
             for g in country.vehicle_group:
                 try:
                     u = g.units[0]
+                    waypoints = _ground_waypoints_from_points(g.points)
                     out.append(VehicleGroup(
                         name=g.name,
                         vehicle_type=_unit_type_id(u),
@@ -346,6 +367,7 @@ def _vehicles(mission: Mission, report: AssemblyReport) -> Optional[List[Vehicle
                         position=Position(x=float(u.position.x), y=float(u.position.y)),
                         group_size=len(g.units),
                         heading=float(u.heading) if hasattr(u, "heading") else 0,
+                        waypoints=waypoints,
                     ))
                 except Exception as e:
                     report.warn(
@@ -363,6 +385,7 @@ def _ships(mission: Mission, report: AssemblyReport) -> Optional[List[ShipGroup]
             for g in country.ship_group:
                 try:
                     u = g.units[0]
+                    waypoints = _ground_waypoints_from_points(g.points)
                     out.append(ShipGroup(
                         name=g.name,
                         ship_type=_unit_type_id(u),
@@ -370,6 +393,7 @@ def _ships(mission: Mission, report: AssemblyReport) -> Optional[List[ShipGroup]
                         side=side_name,
                         position=Position(x=float(u.position.x), y=float(u.position.y)),
                         group_size=len(g.units),
+                        waypoints=waypoints,
                     ))
                 except Exception as e:
                     report.warn(

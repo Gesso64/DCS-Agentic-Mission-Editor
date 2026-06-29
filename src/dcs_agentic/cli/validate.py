@@ -3,6 +3,7 @@
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from ..schemas import MissionSpec
 from ..validation import validate
@@ -27,7 +28,11 @@ def register_subcommand(subparsers) -> None:
 
 
 def run(args: argparse.Namespace) -> None:
-    with open(args.spec_file, "r") as f:
+    spec_path = Path(args.spec_file)
+    if not spec_path.exists():
+        print(f"Error: spec file not found: {spec_path}", file=sys.stderr)
+        sys.exit(1)
+    with open(spec_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     spec = MissionSpec.model_validate(data)
 

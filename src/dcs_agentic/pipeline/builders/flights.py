@@ -154,7 +154,7 @@ def _apply_payload(group, flight_spec: FlightGroup, report: AssemblyReport) -> N
     """
     payload = flight_spec.payload
     pylons = payload.pylons
-    if pylons is None and payload.preset_name:
+    if not pylons and payload.preset_name:
         try:
             preset = catalog_payloads.resolve(
                 flight_spec.aircraft_type, payload.preset_name,
@@ -176,10 +176,13 @@ def _apply_payload(group, flight_spec: FlightGroup, report: AssemblyReport) -> N
         payload_fuel = payload.fuel
 
     for unit in group.units:
-        if pylons is not None:
+        if pylons:
             unit.pylons = {}
             for p in pylons:
-                unit.pylons[p.station] = {"CLSID": p.clsid}
+                entry = {"CLSID": p.clsid}
+                if p.quantity and p.quantity > 1:
+                    entry["count"] = p.quantity
+                unit.pylons[p.station] = entry
         if payload_fuel is not None:
             try:
                 unit.fuel = unit.unit_type.fuel_max * payload_fuel

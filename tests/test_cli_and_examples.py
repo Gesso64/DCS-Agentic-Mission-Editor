@@ -19,7 +19,8 @@ EXAMPLES = ROOT / "examples"
 # ─── Examples build ───────────────────────────────────────────────────────
 
 
-@pytest.mark.parametrize("name", ["cap.json", "strike_with_sead.json", "carrier_ops.json"])
+@pytest.mark.parametrize("name", ["cap.json", "strike_with_sead.json", "carrier_ops.json",
+                                  "capabilities_demo.json", "multirole_f16.json", "cas_sa6_gauntlet.json"])
 def test_example_builds(tmp_path, name):
     """Every bundled example must build cleanly (no error issues)."""
     data = json.loads((EXAMPLES / name).read_text(encoding="utf-8"))

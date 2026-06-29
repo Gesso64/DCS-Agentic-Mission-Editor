@@ -138,7 +138,7 @@ Caucasus · Syria · Persian Gulf · Nevada · Normandy · The Channel · Marian
 ## Contributing
 
 1. Read [`CLAUDE.md`](CLAUDE.md) — project conventions every session must follow.
-2. `pip install -e .[dev]` then `pytest tests/` — all 107 tests must stay green.
+2. `pip install -e .[dev]` then `pytest tests/` — all 110 tests must stay green.
 3. Schema + builder + importer + test in the same commit (adding a field without all three causes silent data loss).
 
 ---

@@ -185,9 +185,17 @@ def _build_info():
             ("multirole", "cap", "strike", "sead"),
             True, "USA", 680, "Full-fidelity multirole; HARM, JDAM, Maverick capable",
         ),
+        "F-14A": (
+            ("cap", "intercept"),
+            True, "USA", 750, "Full-fidelity Tomcat; early model with TF30 engines",
+        ),
         "F-14B": (
             ("cap", "intercept"),
             True, "USA", 800, "Full-fidelity fleet defender; Phoenix/ Sparrow/ Sidewinder",
+        ),
+        "F-4E": (
+            ("multirole", "cap", "strike"),
+            True, "USA", 600, "Full-fidelity Phantom II; iconic Vietnam-era fighter-bomber",
         ),
         "F-15E": (
             ("strike", "ground_attack"),
@@ -326,11 +334,11 @@ def _build_info():
             ("helicopter", "cas"),
             True, "France", 200, "Full-fidelity Gazelle; Mistral AAM",
         ),
-        # === Non-flyable (AI-only) ===
         "F-15C": (
             ("cap", "intercept"),
-            False, "USA", 800, "AI-only Eagle; excellent A2A platform",
+            True, "USA", 800, "Full-fidelity Eagle; excellent A2A platform",
         ),
+        # === Non-flyable (AI-only) ===
         "F-117A": (
             ("strike",),
             False, "USA", 500, "AI-only Nighthawk; stealth strike",
@@ -463,18 +471,6 @@ def _build_info():
         "OH-58D": (
             ("helicopter", "recon", "scout"),
             False, "USA", 200, "AI-only Kiowa Warrior; scout",
-        ),
-        "SA-342L": (
-            ("helicopter", "cas"),
-            False, "France", 200, "AI-only Gazelle; light attack",
-        ),
-        "SA-342M": (
-            ("helicopter", "cas"),
-            False, "France", 200, "AI-only Gazelle; HOT missile",
-        ),
-        "SA-342Mistral": (
-            ("helicopter", "cas"),
-            False, "France", 200, "AI-only Gazelle; Mistral AAM",
         ),
         # Proxies
         "Su-35": (

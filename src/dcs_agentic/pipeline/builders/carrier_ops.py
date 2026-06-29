@@ -62,11 +62,14 @@ def _build_one(mission: Mission, ops: CarrierOps, report: AssemblyReport) -> Non
     if not sg.points:
         report.warn(
             "CARRIER_NO_WAYPOINTS",
-            f"Carrier '{ops.ship_name}' has no waypoints; TACAN beacon "
-            f"will be added at unit position 0",
+            f"Carrier '{ops.ship_name}' has no waypoints; adding default "
+            f"waypoint for TACAN attachment",
             context=ops.ship_name,
         )
-        return
+        from dcs.mapping import Point as MapPoint
+        from dcs.point import MovingPoint
+        origin = sg.units[0].position if sg.units else MapPoint(0, 0, mission.terrain)
+        sg.add_point(MovingPoint(origin))
 
     unit_id = _find_carrier_unit_id(sg)
     beacon = ActivateBeaconCommand(

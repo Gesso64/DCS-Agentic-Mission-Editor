@@ -135,12 +135,13 @@ a last resort.
 | Alias | pydcs attr | Flyable | Roles |
 |---|---|---|---|
 | FA-18C, F/A-18C | `FA_18C_hornet` | ✓ | multirole, cap, strike, sead, cas, antiship |
-| F-15C | `F_15C` | | cap, intercept |
+| F-15C | `F_15C` | ✓ | cap, intercept |
 | F-15E | `F_15E` | ✓ | strike, ground_attack |
 | F-16C | `F_16C_50` | ✓ | multirole, cap, strike, sead |
+| F-14A | `F_14A` | ✓ | cap, intercept |
 | F-14B | `F_14B` | ✓ | cap, intercept |
 | F-5E | `F_5E_3` | ✓ | cap, intercept |
-| F-4E | `F_4E` | | |
+| F-4E | `F_4E` | ✓ | multirole, cap, strike |
 | AV-8B | `AV8BNA` | ✓ | strike, cas |
 | M-2000C | `M_2000C` | ✓ | cap, intercept |
 | AJS-37 | `AJS37` | ✓ | strike, antiship |

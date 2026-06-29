@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .enums import Modulation, Skill, StartType, TaskType
 from .payload import PayloadSpec
@@ -44,3 +44,13 @@ class FlightGroup(BaseModel):
     payload: Optional[PayloadSpec] = Field(
         None, description="Weapons, fuel, and countermeasures configuration"
     )
+
+    @field_validator("side")
+    @classmethod
+    def _validate_side(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return v
+        lower = v.lower()
+        if lower not in ("blue", "red", "neutrals"):
+            raise ValueError(f"side must be 'blue', 'red', or 'neutrals', got '{v}'")
+        return lower

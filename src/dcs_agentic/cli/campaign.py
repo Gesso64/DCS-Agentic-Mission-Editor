@@ -79,14 +79,14 @@ def run(args: argparse.Namespace) -> None:
 
         # Save campaign spec
         spec_path = campaign_dir / "campaign.json"
-        with open(spec_path, "w") as f:
+        with open(spec_path, "w", encoding="utf-8") as f:
             f.write(campaign.model_dump_json(indent=2))
 
         # Save initial state
         state = campaign.initial_state
         state.current_mission = campaign.start_mission
         state_path = campaign_dir / "state.json"
-        with open(state_path, "w") as f:
+        with open(state_path, "w", encoding="utf-8") as f:
             f.write(state.model_dump_json(indent=2))
 
         print(f"✅ Campaign initialized: {campaign.name}")

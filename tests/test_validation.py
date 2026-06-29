@@ -77,7 +77,8 @@ def test_fuel_range_tight_warns():
     ]
     report = validate(spec)
     codes = {i.code for i in report.issues}
-    assert "FUEL_RANGE_TIGHT" in codes or "FUEL_RANGE_EXCEEDED" in codes
+    fuel_codes = codes & {"FUEL_RANGE_TIGHT", "FUEL_RANGE_EXCEEDED"}
+    assert fuel_codes, f"Expected a fuel-range code, got: {codes}"
 
 
 def test_fuel_range_exceeded_errors():

@@ -65,7 +65,7 @@ def run(args: argparse.Namespace) -> None:
         print(import_report.format())
     else:
         # Load from JSON spec
-        with open(input_path, "r") as f:
+        with open(input_path, "r", encoding="utf-8") as f:
             data = json.load(f)
         spec = MissionSpec.model_validate(data)
         print(f"📂 Loaded mission spec: {spec.name}")

@@ -38,7 +38,7 @@ WHEN IMPLEMENTING (Phase 10):
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .mission import MissionSpec
 
@@ -76,6 +76,15 @@ class MissionLink(BaseModel):
     )
 
     description: Optional[str] = Field(None, description="Author-facing description")
+
+    @model_validator(mode="after")
+    def _check_mission_source(self) -> "MissionLink":
+        sources = [self.spec is not None, self.spec_file is not None, self.spec_template is not None]
+        if sum(sources) != 1:
+            raise ValueError(
+                "MissionLink must have exactly one of spec, spec_file, or spec_template"
+            )
+        return self
 
 
 class CampaignState(BaseModel):

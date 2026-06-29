@@ -29,11 +29,11 @@ on the report, not raised — call sites decide whether to proceed.
 | `flights.airport` | ✅ | Resolved via the loaded terrain's `airports` dict (airdrome_id → name) |
 | `flights.start_type` | ✅ | Inferred from first-waypoint action: `FromParkingArea` → COLD, `FromParkingAreaHot` → WARM, `FromRunway` → RUNWAY |
 | `flights.waypoints` | ✅ | x, y, altitude; speed converted from m/s back to km/h. Parking spawn point is omitted when airport is set. |
-| `flights.payload.pylons` | ✅ | Pylon dict → `Pylon(station, clsid, quantity=1)` |
+| `flights.payload.pylons` | ✅ | Pylon dict → `Pylon(station, clsid, quantity)` — reads `count` key when present |
 | `flights.aircraft_type` alias upgrade | ✅ | Reverse-maps pydcs `unit_type.id` (e.g. `FA-18C_hornet`) to friendly alias (e.g. `F/A-18C`) when one exists |
-| `vehicles` | ✅ | name, type, country, side, position, group_size, heading |
+| `vehicles` | ✅ | name, type, country, side, position, group_size, heading, waypoints |
 | `vehicles.vehicle_type` alias upgrade | ❌ | Comes back as the raw pydcs id (e.g. `SA-11 Buk LN 9A310M1` instead of `SA-11-LN`) |
-| `ships` | ✅ | name, type, country, side, position, group_size |
+| `ships` | ✅ | name, type, country, side, position, group_size, waypoints |
 | `statics` | ✅ | name, type, country, side, position, heading |
 
 ## What does not round-trip yet

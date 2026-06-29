@@ -24,7 +24,7 @@ _SHIP_ALIASES = {
     "Neustrashimy": "NEUSTRASH",
     "Kuznetsov": "KUZNECOW",
     "Albion": "ALBATROS",
-    "Type-45": "Type_052C",
+    "Type-45": "USS_Arleigh_Burke_IIa",  # PROXY: British Daring class; closest Western analogue
     "Zubr": "BDK_775", "Ropucha": "BDK_775",
     "Molniya": "MOLNIYA",
     "PIOTR": "PIOTR",

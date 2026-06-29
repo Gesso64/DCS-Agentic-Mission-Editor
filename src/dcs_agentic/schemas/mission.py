@@ -23,10 +23,21 @@ VALID_THEATRES = frozenset({
 })
 
 
+_VALID_SIDES = {"blue", "red", "neutrals"}
+
+
 class Coalition(BaseModel):
     """A coalition side with its countries."""
     side: str = Field(..., description="'blue', 'red', or 'neutrals'")
     country: str = Field(..., description="Country name, e.g. 'USA', 'Russia'")
+
+    @field_validator("side")
+    @classmethod
+    def _validate_side(cls, v: str) -> str:
+        lower = v.lower()
+        if lower not in _VALID_SIDES:
+            raise ValueError(f"side must be one of {_VALID_SIDES}, got '{v}'")
+        return lower
 
 
 class MissionGoal(BaseModel):

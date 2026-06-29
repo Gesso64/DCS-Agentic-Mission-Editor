@@ -45,13 +45,13 @@ class CampaignRunner:
             CampaignRunner instance
         """
         campaign_dir = Path(campaign_dir)
-        with open(campaign_dir / "campaign.json", "r") as f:
+        with open(campaign_dir / "campaign.json", "r", encoding="utf-8") as f:
             campaign_data = json.load(f)
         campaign = CampaignSpec.model_validate(campaign_data)
 
         state_path = campaign_dir / "state.json"
         if state_path.exists():
-            with open(state_path, "r") as f:
+            with open(state_path, "r", encoding="utf-8") as f:
                 state_data = json.load(f)
             state = CampaignState.model_validate(state_data)
         else:
@@ -117,7 +117,7 @@ class CampaignRunner:
     def _save_state(self) -> None:
         """Persist current state to state.json."""
         state_path = self.campaign_dir / "state.json"
-        with open(state_path, "w") as f:
+        with open(state_path, "w", encoding="utf-8") as f:
             f.write(self.state.model_dump_json(indent=2))
 
     def is_complete(self) -> bool:

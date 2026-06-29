@@ -57,8 +57,15 @@ class LLMClient:
         self.model = model or DEFAULT_MODELS.get(role, "claude-opus-4-7")
         self.role = role
 
+        resolved_key = api_key or os.environ.get("ANTHROPIC_API_KEY", "")
+        if not resolved_key.strip():
+            raise ValueError(
+                "No ANTHROPIC_API_KEY configured. Set the environment variable "
+                "or pass api_key to LLMClient()."
+            )
+
         self.client = Anthropic(
-            api_key=api_key or os.environ.get("ANTHROPIC_API_KEY", ""),
+            api_key=resolved_key,
             base_url=base_url or os.environ.get("ANTHROPIC_BASE_URL"),
         )
 
