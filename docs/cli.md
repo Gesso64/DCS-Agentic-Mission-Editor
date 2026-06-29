@@ -1,28 +1,30 @@
 # CLI reference
 
-The CLI entry point is [`src/dcs_agentic/__main__.py`](../src/dcs_agentic/__main__.py).
 Invoke as either:
 
 ```
 python -m dcs_agentic <subcommand> [flags]
-dcs-agentic <subcommand> [flags]              # if installed via `pip install -e .`
+dcs-agentic <subcommand> [flags]
 ```
+
+Run `--help` at any level for usage details.
 
 ## Subcommands
 
-| Subcommand | Purpose |
-|---|---|
-| `build` | Build a `.miz` from a JSON `MissionSpec` file |
-| `validate` | Run validation checks over a JSON spec without assembling |
-| `inspect` | Show a summary of a `.miz` or `MissionSpec` JSON |
-| `list` | Browse the catalog (aircraft, vehicles, payloads, theatres, …) |
-| `design` | Use an LLM to create a mission from a natural-language prompt |
-| `edit` | Edit an existing mission (`.miz` or `spec.json`) via LLM tool calls |
-| `campaign` | Initialize, run, report, and inspect multi-mission campaigns |
+| Subcommand | Purpose | Requires AI? |
+|---|---|---|
+| `build` | Build a `.miz` from a JSON spec | No |
+| `validate` | Check a spec for errors without building | No |
+| `inspect` | Show what's inside a `.miz` or spec | No |
+| `import` | Convert a `.miz` to a JSON spec | No |
+| `list` | Browse the aircraft / vehicle / payload catalog | No |
+| `setup` | Register the MCP server with your AI host | No |
+| `mcp` | Start the MCP server (stdio) | No |
+| `design` | Generate a mission from a natural-language prompt | Yes — API key |
+| `edit` | Edit a mission via natural-language instruction | Yes — API key |
+| `campaign` | Manage multi-mission campaigns | Yes — API key |
 
-`--version` and `--help` are available at every level.
-
-Each subcommand prints a usage banner via `--help`.
+---
 
 ## `build`
 
@@ -30,14 +32,15 @@ Each subcommand prints a usage banner via `--help`.
 dcs-agentic build SPEC_FILE [-o OUTPUT] [--strict]
 ```
 
-Reads a JSON `MissionSpec`, runs the assembler, writes a `.miz`, and
-prints the `AssemblyReport`.
+Reads a JSON `MissionSpec`, assembles it with pydcs, and writes a `.miz`.
 
 | Flag | Description |
 |---|---|
-| `SPEC_FILE` | Path to a JSON mission spec (positional, required) |
+| `SPEC_FILE` | Path to a JSON mission spec (required) |
 | `-o`, `--output` | Output `.miz` path (default: `output/mission.miz`) |
-| `--strict` | Exit non-zero if any error-severity issue occurred |
+| `--strict` | Exit non-zero if any error-severity issue is reported |
+
+---
 
 ## `validate`
 
@@ -45,15 +48,16 @@ prints the `AssemblyReport`.
 dcs-agentic validate SPEC_FILE [--strict]
 ```
 
-Runs the Phase 7 validation layer (`coordinate_sanity`, `fuel_range`,
-`weapons_match`, `route_sanity`, `references`) against the spec without
-touching pydcs. Exits 1 if any error is reported; with `--strict`,
-warnings also fail.
+Runs coordinate sanity, fuel range, weapons compatibility, route logic, and
+cross-reference checks against the spec without touching pydcs. Fast — use
+it before `build`.
 
 | Flag | Description |
 |---|---|
-| `SPEC_FILE` | Path to a JSON mission spec (positional, required) |
+| `SPEC_FILE` | Path to a JSON mission spec (required) |
 | `--strict` | Treat warnings as failures |
+
+---
 
 ## `inspect`
 
@@ -61,9 +65,32 @@ warnings also fail.
 dcs-agentic inspect INPUT [--json]
 ```
 
-Reads a `.miz` (via the importer) or a JSON spec and prints a section-by-section
-summary: coalitions, flights, vehicles, ships, statics, FARPs, carrier ops,
-triggers, zones, markers. `--json` dumps the full spec instead of the summary.
+Prints a section-by-section summary of a `.miz` or JSON spec: coalitions,
+flights, vehicles, ships, statics, FARPs, carrier ops, triggers, zones,
+markers. `--json` dumps the full raw spec instead.
+
+---
+
+## `import`
+
+```
+dcs-agentic import INPUT [-o OUTPUT] [--json]
+```
+
+Converts an existing `.miz` file into a JSON `MissionSpec`. Useful for
+inspecting community missions, round-tripping edits, or seeding a spec
+you'll then edit with the MCP server.
+
+| Flag | Description |
+|---|---|
+| `INPUT` | Path to a `.miz` file (required) |
+| `-o`, `--output` | Output JSON path (default: `<input>.json`) |
+| `--json` | Print JSON to stdout instead of writing a file |
+
+Warnings are printed for fields the importer doesn't yet handle (weather,
+triggers, drawings). The rest imports cleanly.
+
+---
 
 ## `list`
 
@@ -71,21 +98,67 @@ triggers, zones, markers. `--json` dumps the full spec instead of the summary.
 dcs-agentic list {aircraft|vehicles|ships|statics|payloads|theatres|airports|callsigns} [filters]
 ```
 
-Browse the bundled catalog. Useful when authoring specs by hand.
+Browse the bundled catalog. Helpful when writing JSON specs by hand.
 
 | Flag | Applies to | Description |
 |---|---|---|
-| `--role` | aircraft / vehicles | Filter by role tag (e.g. `cap`, `sam`, `strike`) |
+| `--role` | aircraft / vehicles | Filter by role tag (`cap`, `strike`, `sam`, `armor`, …) |
 | `--aircraft` | payloads | Show presets for one aircraft alias |
 | `--theatre` | airports | Show airports for one theatre |
 
 Examples:
+
 ```
 dcs-agentic list aircraft --role cap
 dcs-agentic list payloads --aircraft F/A-18C
-dcs-agentic list airports --theatre Caucasus
+dcs-agentic list airports --theatre Syria
 dcs-agentic list callsigns
 ```
+
+---
+
+## `setup`
+
+```
+dcs-agentic setup [--host HOST] [--dry-run]
+```
+
+Registers the MCP server with your AI host by writing into its config file.
+Backs up the existing config before writing. Safe to run multiple times —
+it only updates the `dcs-agentic` entry, leaving other servers untouched.
+
+| Flag | Description |
+|---|---|
+| `--host` | Target host (see table below). Default: `claude-desktop` |
+| `--dry-run` | Show what would be written without modifying any files |
+
+| `--host` value | Config file written |
+|---|---|
+| `claude-desktop` | `~/AppData/Roaming/Claude/claude_desktop_config.json` (Windows) |
+| `claude-code` | `~/.claude.json` |
+| `claude-code-project` | `.mcp.json` in the current directory |
+| `cursor` | `~/.cursor/mcp.json` |
+| `cursor-project` | `.cursor/mcp.json` in the current directory |
+| `windsurf` | `~/.codeium/windsurf/mcp_config.json` |
+| `zed` | `~/.config/zed/settings.json` |
+
+For Cline and Continue, see the manual snippets in [`docs/mcp.md`](mcp.md).
+
+---
+
+## `mcp`
+
+```
+dcs-agentic mcp
+```
+
+Starts the MCP server on stdio. Normally your AI host launches this
+automatically — you only need to run it manually for debugging or when
+using an MCP client that doesn't auto-launch servers.
+
+Requires `pip install -e .[mcp]`.
+
+---
 
 ## `design`
 
@@ -93,19 +166,18 @@ dcs-agentic list callsigns
 dcs-agentic design -p PROMPT [-t THEATRE] [-o OUTPUT] [--model MODEL] [--strict]
 ```
 
-Calls `agents.mission_agent.design_mission()` to generate a `MissionSpec`
-from a natural-language prompt, validates it, and assembles a `.miz`.
-Retries on validation failure (up to 2 times).
+Generates a `MissionSpec` from a natural-language prompt using the bundled
+AI agent, then assembles the `.miz`. Requires `ANTHROPIC_API_KEY`.
 
 | Flag | Description |
 |---|---|
-| `-p`, `--prompt` | Natural-language description (required) |
+| `-p`, `--prompt` | Mission description in natural language (required) |
 | `-t`, `--theatre` | Theatre/map (default: `Caucasus`) |
 | `-o`, `--output` | Output `.miz` path (default: `output/mission.miz`) |
-| `--model` | LLM model alias override (e.g. `claude-sonnet-4-6` for GLM) |
+| `--model` | Model override (default: `claude-opus-4-5`) |
 | `--strict` | Exit non-zero on assembly errors |
 
-Requires `ANTHROPIC_API_KEY` (or `ANTHROPIC_BASE_URL` for a LiteLLM proxy).
+---
 
 ## `edit`
 
@@ -113,20 +185,18 @@ Requires `ANTHROPIC_API_KEY` (or `ANTHROPIC_BASE_URL` for a LiteLLM proxy).
 dcs-agentic edit INPUT -i INSTRUCTION [-o OUTPUT] [--model MODEL] [--strict]
 ```
 
-Loads a mission (from `.miz` via the importer, or from a `spec.json`),
-runs `agents.editor_agent.edit_mission()` which drives a multi-turn
-tool-call loop, then assembles the result.
+Loads an existing mission and edits it via a multi-turn AI tool-call loop.
+Requires `ANTHROPIC_API_KEY`.
 
 | Flag | Description |
 |---|---|
-| `INPUT` | `.miz` file or `spec.json` to edit (positional, required) |
+| `INPUT` | `.miz` file or JSON spec to edit (required) |
 | `-i`, `--instruction` | Natural-language edit instruction (required) |
 | `-o`, `--output` | Output `.miz` path (default: `output/edited_mission.miz`) |
-| `--model` | LLM model alias override |
+| `--model` | Model override (default: `claude-sonnet-4-5`) |
 | `--strict` | Exit non-zero on assembly errors |
 
-The editor uses 19 tools (`add_flight`, `move_waypoint`, `set_payload`, …)
-— see [`agents.md`](agents.md) for the full list.
+---
 
 ## `campaign`
 
@@ -137,61 +207,31 @@ dcs-agentic campaign report  --name NAME [--winner blue|red|draw] [--blue-score 
 dcs-agentic campaign inspect --name NAME [--dir D]
 ```
 
-Manages a multi-mission campaign rooted at `<DIR>/<NAME>/`. `init`
-designs the `CampaignSpec` and writes `campaign.json` + `state.json`;
-`run` renders the current mission template and saves a `.miz`;
-`report` records an outcome and advances the branch; `inspect` prints
-state.
+Manages a multi-mission campaign stored under `<DIR>/<NAME>/`. `init` designs
+the campaign structure; `run` renders the current mission template to a `.miz`;
+`report` records the outcome and advances the campaign branch; `inspect` shows
+current state.
 
 | Flag | Subcommand | Description |
 |---|---|---|
 | `--name` | all | Campaign name (matches directory) |
 | `--prompt` | init | Campaign description |
 | `--theatre` | init | Default: `Caucasus` |
-| `--model` | init / run | LLM model override |
-| `--dir` | all | Campaigns root (default: `campaigns`) |
+| `--model` | init / run | Model override |
+| `--dir` | all | Campaigns root directory (default: `campaigns`) |
 | `--winner` | report | `blue`, `red`, or `draw` |
 | `--blue-score` | report | Defaults to 0 |
 | `--red-score` | report | Defaults to 0 |
-| `--from <file>` | report | Read outcome from `.json` (Lua hook) or `.acmi` (TacView). CLI flags override file values when set. See [`after_action.md`](after_action.md). |
+| `--from FILE` | report | Read outcome from a `.json` (Lua hook) or `.acmi` (TacView) file |
 
-## Output (build / design / edit)
+Requires `ANTHROPIC_API_KEY`. See [`after_action.md`](after_action.md) for the
+outcome file formats.
 
-Standard output contains, in order:
-1. A short header (name, theatre, counts).
-2. The block `Assembly report:` followed by every issue from
-   [`AssemblyReport`](../src/dcs_agentic/errors.py) in the format
-   `SEVERITY CODE [context]: message  hint: ...`.
-3. `Done! Mission saved to: <path>`.
-4. If errors occurred: a summary line `(N error(s), M warning(s))`.
-
-If `--strict` is set and the assembly produces any error, the process
-raises `AssemblyError` and exits non-zero. Without `--strict`, errors
-are reported but the `.miz` is still written.
+---
 
 ## Exit codes
 
 | Code | Meaning |
 |---|---|
-| 0 | success (or non-strict with errors) |
-| 1 | no subcommand given, or strict mode with errors |
-| 2 | `edit` invoked with a `.miz` whose importer returned `IMPORTER_NOT_IMPLEMENTED` (defensive guard — current importer implements round-trip, but the guard remains) |
-
-## Examples
-
-```
-# Build from a JSON spec
-dcs-agentic build examples/capabilities_demo.json -o output/op-lion.miz
-
-# Design from a prompt
-dcs-agentic design -p "2-ship CAP over Batumi, Russian Su-27 threat from Sochi"
-
-# Edit an existing mission
-dcs-agentic edit output/op-lion.miz -i "add an AWACS orbiting 100km east of Batumi"
-
-# Campaign workflow
-dcs-agentic campaign init --name op-lion --prompt "5-mission strike campaign in Caucasus"
-dcs-agentic campaign run  --name op-lion
-dcs-agentic campaign report --name op-lion --winner blue --blue-score 1000
-dcs-agentic campaign inspect --name op-lion
-```
+| 0 | Success |
+| 1 | Error (missing argument, strict mode with assembly errors, import failure) |

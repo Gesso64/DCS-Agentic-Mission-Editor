@@ -46,10 +46,16 @@ def main():
     from .cli import inspect as inspect_module
     from .cli import list_catalog as list_catalog_module
     from .cli import validate as validate_module
+    from .cli import import_miz as import_miz_module
+    from .cli import mcp_cmd as mcp_cmd_module
+    from .cli import setup_cmd as setup_cmd_module
     build_module.register_subcommand(subparsers)
     validate_module.register_subcommand(subparsers)
     inspect_module.register_subcommand(subparsers)
     list_catalog_module.register_subcommand(subparsers)
+    import_miz_module.register_subcommand(subparsers)
+    mcp_cmd_module.register_subcommand(subparsers)
+    setup_cmd_module.register_subcommand(subparsers)
 
     parser.add_argument(
         "--version", action="version",

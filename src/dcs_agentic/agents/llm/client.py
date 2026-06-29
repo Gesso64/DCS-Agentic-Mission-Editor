@@ -13,21 +13,20 @@ from typing import Any, Dict, List, Optional
 
 from anthropic import Anthropic
 
-# Default model aliases resolved by the user's LiteLLM proxy.
-# These map to real models via the user's OpenRouter configuration.
-#   claude-opus-4-7   -> Claude Sonnet (advisor tier)
-#   claude-sonnet-4-6 -> GLM-5.2       (agent tier)
-#   claude-*          -> DeepSeek V4 Flash (subagent tier)
+# Public Anthropic model IDs used when no --model override or proxy is set.
+# Override any of these via --model on the CLI / the GUI's Settings dialog,
+# or point ANTHROPIC_BASE_URL at a LiteLLM/OpenRouter proxy and pass
+# whatever alias your proxy understands.
 DEFAULT_MODELS = {
-    "designer":         "claude-opus-4-7",    # one-shot quality matters most
-    "editor":           "claude-sonnet-4-6",  # many cheap turns, tools constrain
-    "campaign_arch":    "claude-opus-4-7",    # cross-mission reasoning
-    "template_render":  "claude-sonnet-4-6",  # routine per-mission filling
+    "designer":         "claude-opus-4-5",    # one-shot quality matters most
+    "editor":           "claude-sonnet-4-5",  # many cheap turns, tools constrain
+    "campaign_arch":    "claude-opus-4-5",    # cross-mission reasoning
+    "template_render":  "claude-sonnet-4-5",  # routine per-mission filling
 }
 
 # Models that trigger automatic escalation from editor to designer tier
 ESCALATION_KEYWORDS = {"redesign", "rebuild", "rewrite", "restructure"}
-ESCALATION_MODEL = "claude-opus-4-7"
+ESCALATION_MODEL = "claude-opus-4-5"
 
 
 class LLMClient:

@@ -1,186 +1,136 @@
-# dcs-agentic
+# DCS Agentic Mission Editor
 
-AI-driven DCS World mission and campaign editor. Generate `.miz` files
-from declarative JSON specs or natural-language prompts. Edit existing
-missions via tool-calling agents. Build full campaigns with persistent
-state.
+**Generate DCS World `.miz` mission files by describing what you want in plain language.**
 
-## Status
+Tell your AI what you want — _"2-ship F-16 CAP over Batumi at dawn with a SA-10 threat, save to output/op.miz"_ — and it builds the mission file ready to load in DCS World. Works with Claude Desktop, Claude Code, Cursor, Windsurf, Zed, Cline, Continue, or any MCP-capable AI host. The model is never locked.
 
-All 12 phases of [`PLAN.md`](PLAN.md) are complete: single-mission
-generation, `.miz` round-trip importer, full trigger builder, full
-Phase-4 builders (payloads, ROE/AlarmState, FARPs, drawings, carrier
-TACAN), the three agents (designer / editor / campaign architect),
-the validation layer, after-action parsing (Lua hook + TacView), and
-CLI polish (`inspect`, `list`, `--version`). 88 tests pass.
+---
 
-## Install
+## Prerequisites
 
-```
-pip install -e .[dev]
-```
+- **Python 3.11+**
+- **DCS World** installed (to load the generated `.miz` files)
+- One of:
+  - An **MCP-capable AI host** (Claude Desktop, Claude Code, Cursor, Windsurf, Zed, Cline, Continue) — no API key needed, the model lives in the host
+  - An **Anthropic API key** — for the bundled agent / chat GUI path
 
-For the AI agent features:
-```
-pip install -e .[dev,agents]
-```
-
-Set `ANTHROPIC_API_KEY` (and optionally `ANTHROPIC_BASE_URL` for a
-LiteLLM/OpenRouter proxy) before invoking `design` / `edit` / `campaign`.
-
-## GUI (chat)
-
-Prefer to just talk to the AI? Launch the desktop chat GUI:
-
-```
-run-gui.bat              # Windows — double-click, or:
-python start-mission-gui.py
-```
-
-Type what you want ("2-ship F-16 CAP over Batumi at dawn"); it designs the
-mission, assembles the `.miz`, and saves it to your output folder. Follow-up
-messages edit that same mission ("add a tanker", "move the CAP north"). Set
-your `ANTHROPIC_API_KEY` (and optional proxy base URL), theatre, output
-folder, and model override in **Settings** (Ctrl+,). Requires `PySide6`
-(`pip install PySide6`) and the `agents` extra.
+---
 
 ## Quickstart
 
-Build a mission from a JSON spec:
+### Option A — MCP server (recommended)
+
+Connect the tool to your AI host and drive it with any model you already use.
+
+**1. Install**
 ```
+pip install -e .[mcp]
+```
+
+**2. Register with your AI host**
+```
+python -m dcs_agentic setup                            # Claude Desktop (default)
+python -m dcs_agentic setup --host claude-code         # Claude Code
+python -m dcs_agentic setup --host cursor              # Cursor
+python -m dcs_agentic setup --host windsurf            # Windsurf
+python -m dcs_agentic setup --host zed                 # Zed
+python -m dcs_agentic setup --host claude-code-project # scoped to this project
+python -m dcs_agentic setup --host cursor-project      # scoped to this project
+```
+
+Windows users: double-click **`setup-mcp.bat`** to do steps 1 and 2 together.
+
+Then restart your host (or run `claude mcp list` for Claude Code) to verify.
+
+**3. Create a mission**
+
+Open a chat in your AI host and describe what you want:
+
+> _Create a 2-ship F-16C CAP starting cold at Batumi, SA-10 threat north of the track, save to output/cap.miz_
+
+The AI calls `new_mission` → `add_flight` → `add_vehicle_group` → `build_mission`. The `.miz` is written to disk and opens directly in DCS World.
+
+---
+
+### Option B — Chat GUI (no terminal required)
+
+For DCS players who prefer a desktop chat window over an AI host.
+
+**Requirements:** `pip install -e .[agents,gui]` and an Anthropic API key.
+
+```
+run-gui.bat              # Windows — double-click
+python start-mission-gui.py
+```
+
+Configure your API key, output folder, and theatre in **Settings** (Ctrl+,). Type what you want; follow-up messages edit the same mission.
+
+---
+
+### Option C — CLI without AI
+
+Build missions from JSON specs or import existing `.miz` files — no AI or API key required.
+
+```
+# Build a .miz from a JSON spec
 python -m dcs_agentic build examples/capabilities_demo.json -o output/op.miz
+
+# Inspect what's in a .miz
+python -m dcs_agentic inspect output/op.miz
+
+# Import an existing .miz back to a JSON spec
+python -m dcs_agentic import existing.miz -o spec.json
+
+# Validate a spec without building
+python -m dcs_agentic validate examples/capabilities_demo.json
 ```
 
-Design from a prompt:
-```
-python -m dcs_agentic design -p "2-ship CAP over Batumi" -o output/cap.miz
-```
+See [`examples/`](examples/) for sample specs covering CAP, strike with SEAD, and carrier ops.
 
-Edit an existing mission:
-```
-python -m dcs_agentic edit output/cap.miz -i "add an AWACS east of Batumi"
-```
+---
 
-Run tests:
-```
-pytest tests/
-```
+## Supported theatres
+
+Caucasus · Syria · Persian Gulf · Nevada · Normandy · The Channel · Mariana Islands · Falklands
+
+## Supported AI hosts
+
+| Host | Setup command |
+|------|--------------|
+| Claude Desktop | `python -m dcs_agentic setup` |
+| Claude Code | `python -m dcs_agentic setup --host claude-code` |
+| Cursor | `python -m dcs_agentic setup --host cursor` |
+| Windsurf | `python -m dcs_agentic setup --host windsurf` |
+| Zed | `python -m dcs_agentic setup --host zed` |
+| Cline (VS Code) | Manual — see [docs/mcp.md](docs/mcp.md) |
+| Continue | Manual — see [docs/mcp.md](docs/mcp.md) |
+
+---
 
 ## Documentation
 
-| Doc | Covers |
+| | |
 |---|---|
-| [`docs/index.md`](docs/index.md) | Orientation + what works / what doesn't |
-| [`docs/architecture.md`](docs/architecture.md) | Module map + conventions + build order |
-| [`docs/schema-reference.md`](docs/schema-reference.md) | Every Pydantic model and field |
-| [`docs/cli.md`](docs/cli.md) | CLI subcommands (`build`, `design`, `edit`, `campaign`) |
-| [`docs/pipeline.md`](docs/pipeline.md) | `MissionAssembler` + builders + error codes |
-| [`docs/catalog.md`](docs/catalog.md) | Aircraft / vehicle / ship / country aliases |
-| [`docs/agents.md`](docs/agents.md) | Designer / editor / campaign agents + 19-tool surface |
-| [`docs/importer.md`](docs/importer.md) | `.miz → MissionSpec` reverse-pipeline |
-| [`docs/validation.md`](docs/validation.md) | Phase 7 validation layer |
-| [`docs/after_action.md`](docs/after_action.md) | Phase 11 outcome parsing (Lua hook, TacView) |
-| [`docs/examples.md`](docs/examples.md) | Walkthrough of the bundled examples |
-| [`PLAN.md`](PLAN.md) | Forward-looking build plan (12 phases) |
-| [`CLAUDE.md`](CLAUDE.md) | Conventions for any Claude session in this repo |
+| [**MCP setup & tool catalog**](docs/mcp.md) | Connecting AI hosts, all 24 tools, session model |
+| [**CLI reference**](docs/cli.md) | Every subcommand and flag |
+| [**Schema reference**](docs/schema-reference.md) | FlightGroup, VehicleGroup, Weather, Trigger, … |
+| [**Aircraft & vehicle catalog**](docs/catalog.md) | Type aliases, roles, payload presets |
+| [**Examples walkthrough**](docs/examples.md) | CAP, strike/SEAD, carrier ops explained |
+| [**Validation**](docs/validation.md) | What gets checked before a `.miz` is built |
+| [**Bundled agents**](docs/agents.md) | `design`, `edit`, `campaign` commands (API key path) |
+| [**Importer**](docs/importer.md) | `.miz → JSON spec` reverse pipeline |
+| [**After-action parsing**](docs/after_action.md) | Lua hook + TacView `.acmi` outcome parsing |
 
-## Repository layout
-
-```
-src/dcs_agentic/
-├── __init__.py
-├── __main__.py                 # CLI entry — dispatches to cli/*
-├── errors.py                   # AssemblyReport, AssemblyError, Severity
-├── units.py                    # km/h ↔ m/s ↔ kt, m ↔ ft converters
-│
-├── schemas/                    # Pydantic models — public contract
-│   ├── primitives.py           # Position, Waypoint
-│   ├── enums.py                # TaskType, StartType, Skill, ROE, AlarmState, …
-│   ├── weather.py              # Weather, Wind*
-│   ├── briefing.py             # Briefing
-│   ├── flight.py               # FlightGroup
-│   ├── payload.py              # PayloadSpec, Pylon
-│   ├── ground.py               # VehicleGroup, FARP, StaticObject
-│   ├── naval.py                # ShipGroup, CarrierOps
-│   ├── triggers.py             # TriggerKind / ActionKind closed unions
-│   ├── drawing.py              # Zone, MapMarker
-│   ├── radio.py                # RadioComms (ATC, AWACS, tanker, JTAC)
-│   ├── bullseye.py             # Bullseye per side
-│   ├── mission.py              # MissionSpec, Coalition, MissionGoal, CustomScript
-│   └── campaign.py             # CampaignSpec, CampaignState, MissionLink, AfterAction
-│
-├── catalog/                    # Domain knowledge: aliases + lookups
-│   ├── aircraft.py             # planes + helicopters; resolve(), is_proxy(), list_by_role()
-│   ├── vehicles.py             # AD, artillery, armor (with role tags)
-│   ├── ships.py
-│   ├── statics.py
-│   ├── countries.py
-│   ├── theatres.py             # CATALOG[name] → TheatreInfo (bounds, airports, bullseye)
-│   ├── payloads.py             # 14 named loadout presets across 9 aircraft
-│   └── callsigns.py            # AWACS / tanker / JTAC name → numeric ID
-│
-├── pipeline/                   # Spec → pydcs → .miz
-│   ├── assembler.py            # MissionAssembler orchestrator
-│   └── builders/               # Per-concern builders
-│       ├── __init__.py         # shared enum mappers
-│       ├── coalitions.py       # + get_or_add_country()
-│       ├── weather.py
-│       ├── flights.py          # incl. _apply_payload (preset or explicit pylons)
-│       ├── ground.py
-│       ├── naval.py
-│       ├── statics.py
-│       ├── triggers.py         # Phase 5: TriggerKind/ActionKind → pydcs
-│       └── custom_scripts.py
-│
-├── importer/                   # Phase 6: .miz → MissionSpec
-│   └── miz_reader.py           # import_miz() + load_payloads workaround
-│
-├── validation/                 # Phase 7 (partial): coordinate / weapons / route checks
-├── campaign/                   # Phase 10: CampaignRunner + after_action
-│   ├── runner.py
-│   └── after_action.py
-│
-├── cli/                        # Subcommands wired via __main__.py
-│   ├── build.py
-│   ├── design.py
-│   ├── edit.py
-│   └── campaign.py
-│
-└── agents/                     # LLM agent layer — Phases 8/9/10
-    ├── mission_agent.py        # Phase 8: design_mission()
-    ├── editor_agent.py         # Phase 9: edit_mission() with tool-call loop
-    ├── campaign_agent.py       # Phase 10: design_campaign(), render_mission()
-    ├── llm/
-    │   ├── client.py           # Anthropic SDK wrapper + role → model mapping
-    │   └── messages.py         # Prompt template rendering + catalog injection
-    ├── prompts/
-    │   ├── mission_designer.md
-    │   ├── editor.md
-    │   └── campaign_architect.md
-    └── tools/
-        └── mutations.py        # 19 editor tools + apply_tool dispatcher
-```
-
-## Tests
-
-46 pytest tests across:
-
-- `test_assembler.py` — end-to-end mission build smoke tests + payload preset application
-- `test_schema.py` — Pydantic drift checks
-- `test_agents.py` — tool surface, prompt rendering, stub-LLM agent loops
-- `test_triggers_and_importer.py` — trigger builder + `.miz` round-trip
-
-```
-pytest tests/
-```
+---
 
 ## Contributing
 
-Read [`CLAUDE.md`](CLAUDE.md) first — it documents the conventions every
-session (human or AI) in this repo must follow.
+1. Read [`CLAUDE.md`](CLAUDE.md) — project conventions every session must follow.
+2. `pip install -e .[dev]` then `pytest tests/` — all 107 tests must stay green.
+3. Schema + builder + importer + test in the same commit (adding a field without all three causes silent data loss).
+
+---
 
 ## License
 
-Proprietary — All Rights Reserved. See [`LICENSE`](LICENSE). This is a
-private project; access to the repository does not grant a license to
-the code.
+See [`LICENSE`](LICENSE).
